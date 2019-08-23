@@ -99,7 +99,13 @@ function Apps({ showSystem, showAddModal, closeModal }) {
   useEffect(refresh, []);
 
   if (error) {
-    return <span>Error! {JSON.stringify(error)}</span>;
+    return (
+      <div className="apps">
+        <span className="noRoutes">
+          Failed to connect... Is the localproxy server running?
+        </span>
+      </div>
+    );
   }
 
   const filteredApps = apps.filter(app => showSystem || !app.system);
