@@ -48,6 +48,8 @@ const template = routes =>
 
     # TODO Temporarily while debugging proxy-ui
     add_header Access-Control-Allow-Origin *;
+    add_header Access-Control-Allow-Methods *;
+    add_header Access-Control-Allow-Headers *;
 
     server_name localproxy;
 ${routes

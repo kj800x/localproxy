@@ -48,3 +48,29 @@ a {
   text-decoration: none;
   color: #00a4bd;
 }
+
+.icon {
+  border-radius: 20px;
+  float: right;
+  width: 1em;
+  height: 1em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 0 0 8px;
+  user-select: none;
+}
+
+.icon-text {
+  font-size: 0.7em;
+  color: #2d3e50;
+  align-self: baseline;
+}
+
+.noRoutes {
+  text-align: center;
+  width: 100%;
+  display: block;
+  padding: 24px;
+  font-size: xx-large;
+}

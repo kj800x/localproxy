@@ -26,6 +26,7 @@ server.on("listening", () => {
   store.register({
     id: "localproxy api",
     title: "localproxy api",
+    system: true,
     routes: [
       {
         static: false,
@@ -35,9 +36,11 @@ server.on("listening", () => {
         trimRoute: true
       },
       {
-        static: true,
+        static: false,
         route: "/__proxy__",
-        staticDir: __dirname + "/proxy-ui/build"
+        hostname: "localhost",
+        port: 3000,
+        trimRoute: false
       }
     ]
   });
