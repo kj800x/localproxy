@@ -36,11 +36,9 @@ server.on("listening", () => {
         trimRoute: true
       },
       {
-        static: false,
+        static: true,
         route: "/__proxy__",
-        hostname: "localhost",
-        port: 3000,
-        trimRoute: false
+        staticDir: __dirname + "/proxy-ui/build/"
       }
     ]
   });
