@@ -6,7 +6,8 @@ body {
 }
 
 h1,
-h2 {
+h2,
+h3 {
   margin: 0;
 }
 
@@ -73,4 +74,37 @@ a {
   display: block;
   padding: 24px;
   font-size: xx-large;
+}
+
+.modal-container {
+  pointer-events: none;
+}
+
+.modal-cover,
+.modal-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.modal-cover {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.modal {
+  pointer-events: auto;
+  background: white;
+  width: 750px;
+  margin: 62px auto 0;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.modal > h3 {
+  color: #6a78d1;
+  padding-bottom: 2px;
+  border-bottom: 1px solid #516f90;
+  margin-bottom: 12px;
 }

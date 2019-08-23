@@ -1,5 +1,22 @@
 import React, { useEffect, useState } from "react";
 
+function UIModal({ children, close, title }) {
+  return (
+    <>
+      <div className="modal-cover" onClick={close} />
+      <div className="modal-container">
+        <div className="modal">
+          <h3 className="modal-top">
+            {title}
+            <UIIcon color="#d94c53" icon="❌" onClick={close} />
+          </h3>
+          <div className="modal-children">{children}</div>
+        </div>
+      </div>
+    </>
+  );
+}
+
 function UIIcon({ icon, color, onClick }) {
   return (
     <span
@@ -62,7 +79,13 @@ function App({ app, refresh }) {
   );
 }
 
-function Apps({ showSystem }) {
+const ShowAddModal = ({ close }) => (
+  <UIModal close={close} title="Manually Add App">
+    Hi
+  </UIModal>
+);
+
+function Apps({ showSystem, showAddModal, closeModal }) {
   const [error, setError] = useState(false);
   const [apps, setApps] = useState([]);
 
@@ -79,34 +102,37 @@ function Apps({ showSystem }) {
     return <span>Error! {JSON.stringify(error)}</span>;
   }
 
-  const renderedApps = apps.filter(app => showSystem || !app.system);
+  const filteredApps = apps.filter(app => showSystem || !app.system);
 
-  if (renderedApps.length === 0) {
-    return (
-      <div className="apps">
-        <span className="noRoutes">No Routes, Just Right</span>
-      </div>
+  const renderedApps =
+    filteredApps.length === 0 ? (
+      <span className="noRoutes">No Routes, Just Right</span>
+    ) : (
+      filteredApps.map(app => <App key={app.id} app={app} refresh={refresh} />)
     );
-  }
 
   return (
     <div className="apps">
-      {renderedApps.map(app => (
-        <App key={app.id} app={app} refresh={refresh} />
-      ))}
+      {renderedApps}
+      {showAddModal && <ShowAddModal close={closeModal} />}
     </div>
   );
 }
 
 function ReactApp() {
   const [showSystem, setShowSystem] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(false);
 
   return (
     <div className="ReactApp">
       <header>
         <h1>
           localproxy
-          <UIIcon color="#6a78d1" icon="➕" />
+          <UIIcon
+            color="#6a78d1"
+            icon="➕"
+            onClick={() => setShowAddModal(true)}
+          />
           <UIIcon
             color="#00a38d"
             icon="🛠"
@@ -114,7 +140,11 @@ function ReactApp() {
           />
         </h1>
       </header>
-      <Apps showSystem={showSystem} />
+      <Apps
+        showSystem={showSystem}
+        showAddModal={showAddModal}
+        closeModal={() => setShowAddModal(false)}
+      />
     </div>
   );
 }
