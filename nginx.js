@@ -67,7 +67,7 @@ function write(routes) {
 }
 
 function reload() {
-  execSync("nginx -s reload");
+  execSync("sudo reload-nginx");
 }
 
 function sync(routes) {
