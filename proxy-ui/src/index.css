@@ -1,0 +1,50 @@
+body {
+  margin: 0;
+  background: #dfe3eb;
+  color: #33475b;
+  font-family: "Lucida Console", Monaco, monospace;
+}
+
+h1,
+h2 {
+  margin: 0;
+}
+
+header {
+  background: #2d3e50;
+  color: #eaf0f6;
+  padding: 12px;
+}
+
+.apps {
+  width: 750px;
+  margin: 0 auto;
+}
+
+.apps > .app {
+  border: 3px solid #5e6ab8;
+  border-radius: 6px;
+  margin: 12px 0;
+  padding: 8px;
+  background: #f0f1fa;
+}
+
+.apps > .app > h2 {
+  color: #6a78d1;
+  padding-bottom: 2px;
+  border-bottom: 1px solid #516f90;
+  margin-bottom: 12px;
+}
+
+.route {
+  margin-top: 5px;
+}
+
+.route > .arrow {
+  font-weight: bold;
+}
+
+a {
+  text-decoration: none;
+  color: #00a4bd;
+}

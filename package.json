@@ -1,0 +1,14 @@
+{
+  "name": "localproxy",
+  "version": "0.0.1",
+  "description": "An API to dynamically configure nginx for static and reverse proxy routes",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "author": "Kevin Johnson <kevin@kj800x.com>",
+  "license": "ISC",
+  "dependencies": {
+    "dedent": "^0.7.0",
+    "indent-string": "^4.0.0"
+  }
+}
