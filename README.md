@@ -7,13 +7,12 @@ Capable of mounting static routes or proxying requests to other servers.
 1. Make user `localproxy`
 2. Install nginx
 3. Disable default site for nginx (`sudo rm /etc/nginx/sites-enabled/default`)
-4. Add `include /etc/localproxy/localproxy.conf;` to the end of the `http` section in `/etc/nginx/nginx.conf`
-5. `sudo mkdir /etc/localproxy`
-6. `sudo chown localproxy /etc/localproxy`
-7. TODO figure out a way to get localproxy user to reload nginx without sudo to simplify the install and run
-8. `npm install`
-9. `sudo node ./server.js` (TODO have this run as localproxy)
-10. TODO how to get this to run on startup
+4. `touch /etc/nginx/conf.d/localproxy.conf`
+5. `chown localproxy /etc/nginx/conf.d/localproxy.conf`
+9. TODO figure out a way to get localproxy user to reload nginx without sudo to simplify the install and run
+10. `npm install`
+11. `sudo node ./server.js` (TODO have this run as localproxy)
+12. TODO how to get this to run on startup
 
 ## Usage
 

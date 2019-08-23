@@ -61,7 +61,7 @@ ${routes
 function write(routes) {
   const content = template(routes);
   console.log(Array(10).join("\n") + content);
-  fs.writeFileSync("/etc/localproxy/localproxy.conf", content);
+  fs.writeFileSync("/etc/nginx/conf.d/localproxy.conf", content);
 }
 
 function reload() {
