@@ -113,7 +113,7 @@ const Input = ({
   );
 };
 
-const AddStaticAppPanel = ({ name, route, refresh, close }) => {
+const AddStaticAppPanel = ({ name, route, priority, refresh, close }) => {
   const [staticDir, setStaticDir] = useState("");
 
   const addApp = async () => {
@@ -127,6 +127,7 @@ const AddStaticAppPanel = ({ name, route, refresh, close }) => {
           {
             static: true,
             route: route || "/default/route",
+            priority: parseInt(priority) || 0,
             staticDir: staticDir || "/default/static/dir/"
           }
         ]
@@ -149,7 +150,7 @@ const AddStaticAppPanel = ({ name, route, refresh, close }) => {
   );
 };
 
-const AddProxyAppPanel = ({ name, route, refresh, close }) => {
+const AddProxyAppPanel = ({ name, route, priority, refresh, close }) => {
   const [hostname, setHostname] = useState("");
   const [port, setPort] = useState("");
   const [trimRoute, setTrimRoute] = useState(false);
@@ -165,6 +166,7 @@ const AddProxyAppPanel = ({ name, route, refresh, close }) => {
           {
             static: false,
             route: route || "/default/route",
+            priority: parseInt(priority) || 0,
             hostname: hostname || "localhost",
             port: port || 80,
             trimRoute
@@ -199,6 +201,7 @@ const AddProxyAppPanel = ({ name, route, refresh, close }) => {
 const AddModal = ({ close, refresh }) => {
   const [name, setName] = useState("");
   const [route, setRoute] = useState("");
+  const [priority, setPriority] = useState("0");
 
   return (
     <UIModal close={close} title="Manually Add App">
@@ -214,6 +217,13 @@ const AddModal = ({ close, refresh }) => {
         onChange={setRoute}
         placeholder={"/a/route"}
       />
+      <Input
+        title="Priority"
+        type="number"
+        value={priority}
+        onChange={setPriority}
+        placeholder={"0"}
+      />
       <Tabs>
         <TabList>
           <Tab>Static</Tab>
@@ -223,6 +233,7 @@ const AddModal = ({ close, refresh }) => {
           <AddStaticAppPanel
             name={name}
             route={route}
+            priority={priority}
             refresh={refresh}
             close={close}
           />
@@ -231,6 +242,7 @@ const AddModal = ({ close, refresh }) => {
           <AddProxyAppPanel
             name={name}
             route={route}
+            priority={priority}
             refresh={refresh}
             close={close}
           />

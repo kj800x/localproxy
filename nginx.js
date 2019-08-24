@@ -7,9 +7,9 @@ const indent = str => indentString(str, 2);
 const getAllowDeny = restrictAccess =>
   restrictAccess
     ? dedent(`
-            allow 127.0.0.1;
-            allow ::1;
-            deny all;
+        allow 127.0.0.1;
+        allow ::1;
+        deny all;
       `)
     : "";
 
@@ -34,8 +34,7 @@ const getRouteBody = route => {
   }
 };
 
-const renderRoute = renderFallback => route => {
-  if (route.fallback && !renderFallback) return "";
+const renderRoute = route => {
   const locationKey = route.route; // ? route.route : `~ ${route.regex}`; TODO regex disabled for now
   const body = getRouteBody(route);
 
@@ -65,21 +64,36 @@ const template = routes =>
 
     server_name localproxy;
 ${routes
-  .map(
-    renderRoute(
-      routes.map(route => route.route).filter(route => route === "/").length ===
-        1
-    )
-  )
+  .map(renderRoute)
   .map(indent)
   .map(indent)
   .join("\n")}
   }
 `);
 
-function write(routes) {
+const buildFinalRoutes = apps => {
+  const routes = {};
+
+  apps.forEach(app => {
+    console.log(app);
+    app.routes.forEach(route => {
+      if (
+        !(routes[route.route] && routes[route.route].priority > route.priority)
+      ) {
+        routes[route.route] = { ...route, app };
+      }
+    });
+  });
+
+  return Object.values(routes);
+};
+
+function write(apps) {
+  const routes = buildFinalRoutes(apps);
+
+  console.log(routes);
+
   const content = template(routes);
-  console.log(Array(10).join("\n") + content);
   fs.writeFileSync("/etc/nginx/conf.d/localproxy.conf", content);
 }
 
@@ -87,8 +101,8 @@ function reload() {
   execSync("sudo reload-nginx");
 }
 
-function sync(routes) {
-  write(routes);
+function sync(apps) {
+  write(apps);
   reload();
 }
 

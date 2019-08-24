@@ -2,29 +2,22 @@ const nginx = require("./nginx");
 
 const apps = {};
 
-function getRoutes() {
-  return Object.values(apps)
-    .map(app => app.routes.map(route => ({ ...route, app })))
-    .flat();
-}
-
 function getApps() {
   return Object.values(apps);
 }
 
 function register(payload) {
   apps[payload.id] = payload;
-  nginx.sync(getRoutes());
+  nginx.sync(getApps());
 }
 
 function deRegister(id) {
   delete apps[id];
-  nginx.sync(getRoutes());
+  nginx.sync(getApps());
 }
 
 module.exports = {
   register,
   deRegister,
-  getRoutes,
   getApps
 };

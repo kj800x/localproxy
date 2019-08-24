@@ -35,18 +35,21 @@ server.on("listening", () => {
         route: "/__proxy__/api",
         hostname: "localhost",
         port: port,
-        trimRoute: true
+        trimRoute: true,
+        priority: 9999
       },
       {
         static: true,
         route: "/__proxy__",
-        staticDir: __dirname + "/proxy-ui/build/"
+        staticDir: __dirname + "/proxy-ui/build/",
+        priority: 0
       },
       {
         static: true,
         fallback: true,
         route: "/",
-        staticDir: __dirname + "/proxy-ui/build/"
+        staticDir: __dirname + "/proxy-ui/build/",
+        priority: -1
       }
     ]
   });

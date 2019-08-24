@@ -52,18 +52,20 @@ Response: empty
 ```ts
 // This route will serve assets from the filesystem
 type StaticRoute = {
-  static: true,
-  route: string, // the route to mount the filesystem server at. This should NOT end with a trailing slash.
-  staticDir: string, // the directory on the filesystem to mount. Must end with a trailing slash.
+  static: true
+  route: string // the route to mount the filesystem server at. This should NOT end with a trailing slash.
+  staticDir: string // the directory on the filesystem to mount. Must end with a trailing slash.
+  priority: number // The priority of this route if multiple routes have the same `route`
 }
 
 // This route will proxy requests to a destination server
 type ProxyRoute = {
-  static: false,
-  route: string, // the route to mount the destination server at. This should NOT end with a trailing slash.
-  hostname: string, // the hostname of the destination server.
+  static: false
+  route: string // the route to mount the destination server at. This should NOT end with a trailing slash.
+  hostname: string // the hostname of the destination server.
   port: number // the port of the destination server.
   trimRoute: boolean // whether to trim the route or not before passing requests to the destination server.
+  priority: number // The priority of this route if multiple routes have the same `route`
 }
 
 type Route = ProxyRoute | StaticRoute
