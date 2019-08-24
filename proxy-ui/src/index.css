@@ -108,3 +108,20 @@ a {
   border-bottom: 1px solid #516f90;
   margin-bottom: 12px;
 }
+
+.ball-grid-pulse > div {
+  background-color: #2d3e50 !important;
+}
+
+.apps > .loader {
+  margin: 20px auto;
+  width: 58px;
+  height: 58px;
+}
+
+.form-input > label {
+  display: block;
+}
+.form-input {
+  margin: 12px 0;
+}

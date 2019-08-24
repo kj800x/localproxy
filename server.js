@@ -25,7 +25,7 @@ server.on("listening", () => {
   console.log(`Using ${port}`);
   store.register({
     id: "localproxy api",
-    title: "localproxy api",
+    name: "localproxy api",
     system: true,
     routes: [
       {
@@ -39,12 +39,18 @@ server.on("listening", () => {
         static: true,
         route: "/__proxy__",
         staticDir: __dirname + "/proxy-ui/build/"
+      },
+      {
+        static: true,
+        fallback: true,
+        route: "/",
+        staticDir: __dirname + "/proxy-ui/build/"
       }
     ]
   });
   store.register({
     id: "nugo",
-    title: "nugo",
+    name: "nugo",
     routes: [
       {
         static: true,

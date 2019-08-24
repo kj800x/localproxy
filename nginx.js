@@ -23,7 +23,8 @@ const getRouteBody = route => {
   }
 };
 
-const renderRoute = route => {
+const renderRoute = renderFallback => route => {
+  if (route.fallback && !renderFallback) return "";
   const locationKey = route.route; // ? route.route : `~ ${route.regex}`; TODO regex disabled for now
   const body = getRouteBody(route);
 
@@ -53,7 +54,12 @@ const template = routes =>
 
     server_name localproxy;
 ${routes
-  .map(renderRoute)
+  .map(
+    renderRoute(
+      routes.map(route => route.route).filter(route => route === "/").length ===
+        1
+    )
+  )
   .map(indent)
   .map(indent)
   .join("\n")}

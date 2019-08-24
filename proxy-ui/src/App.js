@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
 
+import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
+
+import Loader from "react-loaders";
+
 function UIModal({ children, close, title }) {
   return (
     <>
@@ -17,7 +21,7 @@ function UIModal({ children, close, title }) {
   );
 }
 
-function UIIcon({ icon, color, onClick }) {
+function UIIcon({ icon, color, onClick, iconColor }) {
   return (
     <span
       className="icon"
@@ -27,7 +31,9 @@ function UIIcon({ icon, color, onClick }) {
       }}
       onClick={onClick}
     >
-      <span className="icon-text">{icon}</span>
+      <span className="icon-text" style={iconColor ? { color: iconColor } : {}}>
+        {icon}
+      </span>
     </span>
   );
 }
@@ -66,7 +72,7 @@ function App({ app, refresh }) {
   return (
     <div className="app">
       <h2>
-        {app.title}
+        {app.name}
         {!app.system && <UIIcon color="#d94c53" icon="🗑" onClick={deleteApp} />}
         {app.system && <UIIcon color="#00a38d" icon="🛠" />}
       </h2>
@@ -79,39 +85,184 @@ function App({ app, refresh }) {
   );
 }
 
-const ShowAddModal = ({ close }) => {
-  const panes = [
-    {
-      menuItem: 'Tab 1',
-      render: () => <Tab.Pane attached={false}>Tab 1 Content</Tab.Pane>,
-    },
-    {
-      menuItem: 'Tab 2',
-      render: () => <Tab.Pane attached={false}>Tab 2 Content</Tab.Pane>,
-    },
-    {
-      menuItem: 'Tab 3',
-      render: () => <Tab.Pane attached={false}>Tab 3 Content</Tab.Pane>,
-    },
-  ]
+const Input = ({
+  title,
+  value,
+  placeholder,
+  onChange,
+  checked,
+  type = "text"
+}) => {
+  return (
+    <div className="form-input">
+      <label>{title}</label>
+      <input
+        type={type}
+        value={value}
+        checked={checked}
+        placeholder={placeholder}
+        onChange={({ target: { value, checked } }) =>
+          onChange(type === "checkbox" ? checked : value)
+        }
+      />
+    </div>
+  );
+};
 
-return <UIModal close={close} title="Manually Add App">
-    <Tab menu={{ secondary: true, pointing: true }} panes={panes} />
-  </UIModal>
-);
+const AddStaticAppPanel = ({ name, route, refresh, close }) => {
+  const [staticDir, setStaticDir] = useState("");
 
+  const addApp = async () => {
+    await fetch("http://localhost/__proxy__/api", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id: name || "Default Name",
+        name: name || "Default Name",
+        routes: [
+          {
+            static: true,
+            route: route || "/default/route",
+            staticDir: staticDir || "/default/static/dir/"
+          }
+        ]
+      })
+    });
+    close();
+    refresh();
+  };
+
+  return (
+    <div>
+      <Input
+        title="Static Directory"
+        value={staticDir}
+        onChange={setStaticDir}
+        placeholder="/a/filesystem/path/"
+      />
+      <button onClick={addApp}>Add App</button>
+    </div>
+  );
+};
+
+const AddProxyAppPanel = ({ name, route, refresh, close }) => {
+  const [hostname, setHostname] = useState("");
+  const [port, setPort] = useState("");
+  const [trimRoute, setTrimRoute] = useState(false);
+
+  const addApp = async () => {
+    await fetch("http://localhost/__proxy__/api", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id: name || "Default Name",
+        name: name || "Default Name",
+        routes: [
+          {
+            static: false,
+            route: route || "/default/route",
+            hostname: hostname || "localhost",
+            port: port || 80,
+            trimRoute
+          }
+        ]
+      })
+    });
+    close();
+    refresh();
+  };
+
+  return (
+    <div>
+      <Input
+        title="Hostname"
+        value={hostname}
+        onChange={setHostname}
+        placeholder="localhost"
+      />
+      <Input title="Port" value={port} onChange={setPort} placeholder={80} />
+      <Input
+        type="checkbox"
+        title="Trim route"
+        checked={trimRoute}
+        onChange={setTrimRoute}
+      />
+      <button onClick={addApp}>Add App</button>
+    </div>
+  );
+};
+
+const AddModal = ({ close, refresh }) => {
+  const [name, setName] = useState("");
+  const [route, setRoute] = useState("");
+
+  return (
+    <UIModal close={close} title="Manually Add App">
+      <Input
+        title="Name"
+        value={name}
+        onChange={setName}
+        placeholder={"An App Name"}
+      />
+      <Input
+        title="Route"
+        value={route}
+        onChange={setRoute}
+        placeholder={"/a/route"}
+      />
+      <Tabs>
+        <TabList>
+          <Tab>Static</Tab>
+          <Tab>Proxy</Tab>
+        </TabList>
+        <TabPanel>
+          <AddStaticAppPanel
+            name={name}
+            route={route}
+            refresh={refresh}
+            close={close}
+          />
+        </TabPanel>
+        <TabPanel>
+          <AddProxyAppPanel
+            name={name}
+            route={route}
+            refresh={refresh}
+            close={close}
+          />
+        </TabPanel>
+      </Tabs>
+    </UIModal>
+  );
+};
 function Apps({ showSystem, showAddModal, closeModal }) {
   const [error, setError] = useState(false);
   const [apps, setApps] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const refresh = () => {
-    fetch("http://localhost/__proxy__/api")
-      .then(res => res.json())
-      .then(setApps)
-      .catch(setError);
+  const refresh = async () => {
+    try {
+      setLoading(true);
+      const res = await (await fetch("http://localhost/__proxy__/api")).json();
+      setApps(res);
+      setLoading(false);
+    } catch (e) {
+      setError(e);
+      setLoading(false);
+    }
   };
 
-  useEffect(refresh, []);
+  useEffect(() => {
+    refresh();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="apps">
+        <Loader type="ball-grid-pulse" />
+      </div>
+    );
+  }
 
   if (error) {
     return (
@@ -135,7 +286,7 @@ function Apps({ showSystem, showAddModal, closeModal }) {
   return (
     <div className="apps">
       {renderedApps}
-      {showAddModal && <ShowAddModal close={closeModal} />}
+      {showAddModal && <AddModal close={closeModal} refresh={refresh} />}
     </div>
   );
 }
@@ -156,6 +307,7 @@ function ReactApp() {
           />
           <UIIcon
             color="#00a38d"
+            iconColor={showSystem ? "#e5f5f8" : undefined}
             icon="🛠"
             onClick={() => setShowSystem(!showSystem)}
           />

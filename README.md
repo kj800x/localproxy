@@ -74,6 +74,7 @@ type Route = ProxyRoute | StaticRoute
 
 type App = {
   id: string // A Unique ID for this app
+  name: string // Name of the app
   routes: Route[]
 }
 
