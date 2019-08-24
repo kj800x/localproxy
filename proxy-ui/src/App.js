@@ -34,6 +34,7 @@ function UIIcon({ icon, color, onClick, iconColor }) {
         cursor: onClick ? "pointer" : "cursor"
       }}
       onClick={onClick}
+      role={onClick ? "button" : undefined}
     >
       <span className="icon-text" style={iconColor ? { color: iconColor } : {}}>
         {icon}
