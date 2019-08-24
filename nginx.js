@@ -4,12 +4,22 @@ const dedent = require("dedent");
 const indentString = require("indent-string");
 const indent = str => indentString(str, 2);
 
+const getAllowDeny = restrictAccess =>
+  restrictAccess
+    ? dedent(`
+            allow 127.0.0.1;
+            allow ::1;
+            deny all;
+      `)
+    : "";
+
 // https://serverfault.com/questions/562756/how-to-remove-the-path-with-an-nginx-proxy-pass
 // https://stackoverflow.com/questions/10631933/nginx-static-file-serving-confusion-with-root-alias
 const getRouteBody = route => {
   if (route.static) {
     return dedent(`
       alias ${route.staticDir};
+      ${getAllowDeny(route.app.system)}
     `);
   } else {
     const destinationUrl = `http://${route.hostname}:${route.port}${
@@ -19,6 +29,7 @@ const getRouteBody = route => {
       proxy_pass ${destinationUrl};
       proxy_set_header Host      $host;
       proxy_set_header X-Real-IP $remote_addr;
+      ${getAllowDeny(route.app.system)}
   `);
   }
 };

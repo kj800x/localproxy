@@ -4,7 +4,7 @@ const apps = {};
 
 function getRoutes() {
   return Object.values(apps)
-    .map(app => app.routes)
+    .map(app => app.routes.map(route => ({ ...route, app })))
     .flat();
 }
 
