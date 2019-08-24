@@ -4,6 +4,10 @@ import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 
 import Loader from "react-loaders";
 
+// DEVBUILD: Set this to true
+const DEVBUILD = false;
+const PROXY_API_PREFIX = DEVBUILD ? "http://localhost:80" : "";
+
 function UIModal({ children, close, title }) {
   return (
     <>
@@ -62,7 +66,7 @@ function Route({ route }) {
 
 function App({ app, refresh }) {
   const deleteApp = () => {
-    fetch("http://localhost/__proxy__/api", {
+    fetch(PROXY_API_PREFIX + "/__proxy__/api", {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id: app.id })
@@ -113,7 +117,7 @@ const AddStaticAppPanel = ({ name, route, refresh, close }) => {
   const [staticDir, setStaticDir] = useState("");
 
   const addApp = async () => {
-    await fetch("http://localhost/__proxy__/api", {
+    await fetch(PROXY_API_PREFIX + "/__proxy__/api", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -151,7 +155,7 @@ const AddProxyAppPanel = ({ name, route, refresh, close }) => {
   const [trimRoute, setTrimRoute] = useState(false);
 
   const addApp = async () => {
-    await fetch("http://localhost/__proxy__/api", {
+    await fetch(PROXY_API_PREFIX + "/__proxy__/api", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -243,7 +247,9 @@ function Apps({ showSystem, showAddModal, closeModal }) {
   const refresh = async () => {
     try {
       setLoading(true);
-      const res = await (await fetch("http://localhost/__proxy__/api")).json();
+      const res = await (await fetch(
+        PROXY_API_PREFIX + "/__proxy__/api"
+      )).json();
       setApps(res);
       setLoading(false);
     } catch (e) {

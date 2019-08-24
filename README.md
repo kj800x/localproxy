@@ -3,27 +3,25 @@ Dynamically run multiple web applications on routes on http://localhost:80.
 
 Capable of mounting static routes or proxying requests to other servers.
 
+![](./docs/proxyPage.png)
+
 ## Install
-1. Make user `localproxy`
-2. Install nginx
-3. Add file `/usr/bin/reload-nginx`
-```bash
-#!/bin/bash
-nginx -s reload
-```
-1. Add file `/etc/sudoers.d/localproxy` <!-- TODO: Maybe tighten this up to just localproxy user? -->
-```
-ALL ALL = NOPASSWD: /usr/bin/reload-nginx 
-```
-1. Ensure that sudoers.d is loaded (confirm line `#includedir /etc/sudoers.d` in `/etc/sudoers`).
-5. Disable default site for nginx (`sudo rm /etc/nginx/sites-enabled/default`)
-6. `touch /etc/nginx/conf.d/localproxy.conf`
-7. `chown localproxy /etc/nginx/conf.d/localproxy.conf`
-8.  `npm install`
-9.  `sudo node ./server.js` <!-- TODO: Have this run as localproxy -->
-10. ??? <!-- TODO how to get this to run on startup -->
+
+1. Install the `.deb` file from the releases tab.
+
+The `.deb` assumes a few things:
+- `nginx` installed with the default site disabled.
+- `sudo` installed with `/etc/sudoers.d` configured properly.
+- `systemd` with unit file installed in `/lib/systemd/system`.
+- `amd64` system (mostly because it bundles a `amd64` node runtime).
+
+Review the `build-deb.sh` script to get an idea of how to do it manually if you aren't on a debian based system.
 
 ## Usage
+
+Access the UI at http://localhost:80/__proxy__.
+
+## API
 
 Send API requests to `/__proxy__/api`.
 
@@ -31,56 +29,63 @@ While processing a `POST` or `DELETE` request, the nginx config will be immediat
 
 ### `GET`
 
-Get requests will simply return the list of currently installed proxy apps
+Get requests will simply return the list of currently installed proxy apps.
 
 Response: `App[]`
 
 ### `POST`
 
-Post requests will install a proxy app. Note that this will overwrite any other apps 
+Post requests will install a proxy app. Note that this will overwrite any other apps.
 
-Request Payload: `InstallRequest`
-Response: none
+Request Body: `InstallRequest`
+Response: empty
 
 ### `DELETE`
 
-Delete requests will uninstall a proxy app
+Delete requests will uninstall a proxy app.
 
-Request Payload: `DeleteRequest`
-Response: none
+Request Body: `DeleteRequest`
+Response: empty
 
-## Types
+### Types
 
 ```ts
-// TODO Note that the exact specifics of StaticRoute and ProxyRoute are still being worked out...
-
-// This route will serve requests from the filesystem
+// This route will serve assets from the filesystem
 type StaticRoute = {
   static: true,
-  route: string, // the route to mount the filesystem server atThis should not end with a trailing slash
-  staticDir: string, // the directory on the filesystem to mount. Must end with a trailing slash
+  route: string, // the route to mount the filesystem server at. This should NOT end with a trailing slash.
+  staticDir: string, // the directory on the filesystem to mount. Must end with a trailing slash.
 }
 
 // This route will proxy requests to a destination server
 type ProxyRoute = {
   static: false,
-  route: string, // the route to mount the destination server at. This should not end with a trailing slash
-  hostname: string, // the hostname of the destination server
-  port: number // the port of the destination server
-  trimRoute: boolean // whether to trim the route or not before passing to the destination server
+  route: string, // the route to mount the destination server at. This should NOT end with a trailing slash.
+  hostname: string, // the hostname of the destination server.
+  port: number // the port of the destination server.
+  trimRoute: boolean // whether to trim the route or not before passing requests to the destination server.
 }
 
 type Route = ProxyRoute | StaticRoute
 
 type App = {
-  id: string // A Unique ID for this app
-  name: string // Name of the app
+  id: string // a unique ID for this app.
+  name: string // name of the app.
   routes: Route[]
 }
 
 type InstallRequest = App
 
 type DeleteRequest = {
-  id: string // The ID of the app to uninstall
+  id: string // the ID of the app to uninstall.
 }
 ```
+
+## Development
+
+To test changes to the server, you can stop the systemd service and then run the server manually as user `localproxy` (e.g. `sudo -u localproxy node ./server.js`)
+
+To test changes to proxy-ui, you can either:
+- Run a build of proxy-ui after every change, or
+- Do a find-in-project for all `DEVBUILD` comments and follow the instructions. Then you'll be able to `npm start` inside of `proxy-ui` and have it work correctly.
+- Future Goal: If we can figure out how to get create-react-app's webpack-dev-server happy with being routed to by localproxy, we should be able to mount the `proxy-ui` dev server inside of localproxy. Then we wouldn't need any of the `DEVBUILD` changes.

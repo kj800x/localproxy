@@ -1,3 +1,5 @@
+#!/usr/local/share/localproxy/node
+
 const http = require("http");
 
 const store = require("./store");
@@ -24,8 +26,8 @@ server.on("listening", () => {
   const port = server.address().port;
   console.log(`Using ${port}`);
   store.register({
-    id: "localproxy api",
-    name: "localproxy api",
+    id: "localproxy system routes",
+    name: "localproxy system routes",
     system: true,
     routes: [
       {
@@ -45,17 +47,6 @@ server.on("listening", () => {
         fallback: true,
         route: "/",
         staticDir: __dirname + "/proxy-ui/build/"
-      }
-    ]
-  });
-  store.register({
-    id: "nugo",
-    name: "nugo",
-    routes: [
-      {
-        static: true,
-        route: "/",
-        staticDir: "/home/kevin/src/nugo/nulinks-site/build/"
       }
     ]
   });
