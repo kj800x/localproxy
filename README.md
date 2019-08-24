@@ -85,9 +85,6 @@ type DeleteRequest = {
 
 ## Development
 
-To test changes to the server, you can stop the systemd service and then run the server manually as user `localproxy` (e.g. `sudo -u localproxy node ./server.js`)
+To test changes to the server, you can stop the systemd service and then run the server manually as user `localproxy` (e.g. `sudo -u localproxy node ./server.js`).
 
-To test changes to proxy-ui, you can either:
-- Run a build of proxy-ui after every change, or
-- Do a find-in-project for all `DEVBUILD` comments and follow the instructions. Then you'll be able to `npm start` inside of `proxy-ui` and have it work correctly.
-- Future Goal: If we can figure out how to get create-react-app's webpack-dev-server happy with being routed to by localproxy, we should be able to mount the `proxy-ui` dev server inside of localproxy. Then we wouldn't need any of the `DEVBUILD` changes.
+To test changes to proxy-ui, just run it (`npm start`).

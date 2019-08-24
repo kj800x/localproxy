@@ -51,6 +51,7 @@ function Route({ route }) {
     return (
       <div className="route">
         <a href={route.route}>{route.route}</a> <Arrow /> {route.staticDir}
+        <span className="priority">({route.priority})</span>
       </div>
     );
   } else {
@@ -59,6 +60,7 @@ function Route({ route }) {
       <div className="route">
         <a href={route.route}>{route.route}</a> <Arrow />{" "}
         <a href={target}>{target}</a>
+        <span className="priority">({route.priority})</span>
       </div>
     );
   }

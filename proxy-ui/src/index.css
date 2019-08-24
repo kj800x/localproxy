@@ -125,3 +125,7 @@ a {
 .form-input {
   margin: 12px 0;
 }
+
+.priority {
+  float: right;
+}
