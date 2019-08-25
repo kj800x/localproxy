@@ -55,6 +55,7 @@ type StaticRoute = {
   static: true
   route: string // the route to mount the filesystem server at. This should NOT end with a trailing slash.
   staticDir: string // the directory on the filesystem to mount. Must end with a trailing slash.
+  indexFallback: boolean // Whether to serve the root index.html for requests with missing assets. Useful for client side routing.
   priority: number // The priority of this route if multiple routes have the same `route`
 }
 

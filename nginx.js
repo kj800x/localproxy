@@ -13,6 +13,13 @@ const getAllowDeny = restrictAccess =>
       `)
     : "";
 
+const getTryFiles = route =>
+  route.indexFallback
+    ? dedent(`
+        try_files $uri $uri/ /index.html;
+      `)
+    : "";
+
 // https://serverfault.com/questions/562756/how-to-remove-the-path-with-an-nginx-proxy-pass
 // https://stackoverflow.com/questions/10631933/nginx-static-file-serving-confusion-with-root-alias
 const getRouteBody = route => {
@@ -20,6 +27,7 @@ const getRouteBody = route => {
     return dedent(`
       alias ${route.staticDir};
       ${getAllowDeny(route.app.system)}
+      ${getTryFiles(route)}
     `);
   } else {
     const destinationUrl = `http://${route.hostname}:${route.port}${
