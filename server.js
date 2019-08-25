@@ -20,7 +20,7 @@ const getBody = req =>
       });
   });
 
-const server = http.createServer().listen(0);
+const server = http.createServer().listen(0, "localhost");
 
 server.on("listening", () => {
   const port = server.address().port;
