@@ -57,6 +57,9 @@ const template = routes =>
 
     index index.html;
 
+    add_header Cache-Control no-cache;
+    expires -1;
+
     # DEVBUILD: Uncomment these
     # add_header Access-Control-Allow-Origin *;
     # add_header Access-Control-Allow-Methods *;
