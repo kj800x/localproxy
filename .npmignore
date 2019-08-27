@@ -1,0 +1,9 @@
+.nvmrc
+build-deb.sh
+docs/*
+nginx.js
+server.js
+store.js
+proxy-ui/*
+build/*
+proxy-ui/package.json
