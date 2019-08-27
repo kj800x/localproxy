@@ -1,46 +1,44 @@
 const fs = require("fs");
 const { execSync } = require("child_process");
-const dedent = require("dedent");
-const indentString = require("indent-string");
 const indent = str => indentString(str, 2);
 
 const getAllowDeny = restrictAccess =>
   restrictAccess
-    ? dedent(`
+    ? `
         allow 127.0.0.1;
         allow ::1;
         deny all;
-      `)
+      `
     : "";
 
 const getTryFiles = route =>
   route.indexFallback
-    ? dedent(`
+    ? `
         try_files $uri $uri/ /index.html;
-      `)
+      `
     : "";
 
 // https://serverfault.com/questions/562756/how-to-remove-the-path-with-an-nginx-proxy-pass
 // https://stackoverflow.com/questions/10631933/nginx-static-file-serving-confusion-with-root-alias
 const getRouteBody = route => {
   if (route.static) {
-    return dedent(`
+    return `
       alias ${route.staticDir};
       ${getAllowDeny(route.app.system)}
       ${getTryFiles(route)}
-    `);
+    `;
   } else {
     const destinationUrl = `http://${route.hostname}:${route.port}${
       route.trimRoute ? "/" : ""
     }`;
-    return dedent(`
+    return `
       proxy_pass ${destinationUrl};
       proxy_set_header Upgrade    $http_upgrade;
       proxy_set_header Connection "Upgrade";
       proxy_set_header Host       $host;
       proxy_set_header X-Real-IP  $remote_addr;
       ${getAllowDeny(route.app.system)}
-  `);
+    `;
   }
 };
 
@@ -48,15 +46,15 @@ const renderRoute = route => {
   const locationKey = route.route; // ? route.route : `~ ${route.regex}`; TODO regex disabled for now
   const body = getRouteBody(route);
 
-  return dedent(`
+  return `
     location ${locationKey} {
     ${indent(body)}
     }
-  `);
+  `;
 };
 
 const template = routes =>
-  dedent(`
+  `
   log_format scripts '$document_root | $uri | > $request';
 
   server {
@@ -82,13 +80,12 @@ ${routes
   .map(indent)
   .join("\n")}
   }
-`);
+`;
 
 const buildFinalRoutes = apps => {
   const routes = {};
 
   apps.forEach(app => {
-    console.log(app);
     app.routes.forEach(route => {
       if (
         !(routes[route.route] && routes[route.route].priority > route.priority)
@@ -103,8 +100,6 @@ const buildFinalRoutes = apps => {
 
 function write(apps) {
   const routes = buildFinalRoutes(apps);
-
-  console.log(routes);
 
   const content = template(routes);
   fs.writeFileSync("/etc/nginx/conf.d/localproxy.conf", content);

@@ -59,12 +59,15 @@ server.on("request", async (req, res) => {
   if (req.url === "/") {
     if (req.method === "GET") {
       res.write(JSON.stringify(store.getApps()));
+      console.log({ method: req.method });
     } else if (req.method === "POST") {
       const body = await getBody(req);
+      console.log({ method: req.method, body });
       const payload = JSON.parse(body);
       store.register(payload);
     } else if (req.method === "DELETE") {
       const body = await getBody(req);
+      console.log({ method: req.method, body });
       const payload = JSON.parse(body);
       store.deRegister(payload.id);
     }
