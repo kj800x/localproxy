@@ -1,6 +1,5 @@
 const fs = require("fs");
 const { execSync } = require("child_process");
-const indent = str => indentString(str, 2);
 
 const getAllowDeny = restrictAccess =>
   restrictAccess
@@ -48,7 +47,7 @@ const renderRoute = route => {
 
   return `
     location ${locationKey} {
-    ${indent(body)}
+    ${body}
     }
   `;
 };
@@ -74,11 +73,7 @@ const template = routes =>
     # add_header Access-Control-Allow-Headers *;
 
     server_name localproxy;
-${routes
-  .map(renderRoute)
-  .map(indent)
-  .map(indent)
-  .join("\n")}
+${routes.map(renderRoute).join("\n")}
   }
 `;
 
