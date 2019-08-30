@@ -89,6 +89,7 @@ chown localproxy /etc/nginx/conf.d/localproxy.conf
 systemctl daemon-reload
 systemctl start localproxy.service
 systemctl enable localproxy.service
+systemctl restart localproxy.service
 $HERE
 chmod +x DEBIAN/postinst
 
