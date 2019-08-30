@@ -17,6 +17,13 @@ const getTryFiles = route =>
       `
     : "";
 
+const getAutoIndex = route =>
+  route.autoIndex
+    ? `
+        autoindex on;
+      `
+    : "";
+
 // https://serverfault.com/questions/562756/how-to-remove-the-path-with-an-nginx-proxy-pass
 // https://stackoverflow.com/questions/10631933/nginx-static-file-serving-confusion-with-root-alias
 const getRouteBody = route => {
@@ -25,6 +32,7 @@ const getRouteBody = route => {
       alias ${route.staticDir};
       ${getAllowDeny(route.app.system)}
       ${getTryFiles(route)}
+      ${getAutoIndex(route)}
     `;
   } else {
     const destinationUrl = `http://${route.hostname}:${route.port}${

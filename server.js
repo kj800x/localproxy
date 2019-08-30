@@ -46,7 +46,6 @@ server.on("listening", () => {
       },
       {
         static: true,
-        fallback: true,
         route: "/",
         staticDir: __dirname + "/proxy-ui/build/",
         priority: -1

@@ -5,6 +5,7 @@
   "scripts": {
     "start": "sudo -u localproxy /home/kevin/.nvm/versions/node/v12.3.1/bin/node server.js"
   },
+  "bin": "cli.js",
   "main": "client.js",
   "author": "Kevin Johnson <kevin@kj800x.com>",
   "license": "MIT",
