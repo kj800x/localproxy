@@ -4,10 +4,6 @@ import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 
 import Loader from "react-loaders";
 
-// DEVBUILD: Set this to true
-const DEVBUILD = false;
-const PROXY_API_PREFIX = DEVBUILD ? "http://localhost:80" : "";
-
 function UIModal({ children, close, title }) {
   return (
     <>
@@ -47,29 +43,40 @@ function Arrow() {
   return <span className="arrow">→</span>;
 }
 
-function Route({ route }) {
+function RouteMapping({ route }) {
   if (route.static) {
     return (
-      <div className="route">
+      <span>
         <a href={route.route}>{route.route}</a> <Arrow /> {route.staticDir}
-        <span className="priority">({route.priority})</span>
-      </div>
-    );
-  } else {
-    const target = `http://${route.hostname}:${route.port}`;
-    return (
-      <div className="route">
-        <a href={route.route}>{route.route}</a> <Arrow />{" "}
-        <a href={target}>{target}</a>
-        <span className="priority">({route.priority})</span>
-      </div>
+      </span>
     );
   }
+  const target = `http://${route.hostname}:${route.port}`;
+  return (
+    <span>
+      <a href={route.route}>{route.route}</a> <Arrow />{" "}
+      <a href={target}>{target}</a>
+    </span>
+  );
+}
+
+function Route({ route }) {
+  return (
+    <div className="route">
+      <RouteMapping route={route} />
+      <span className="priority">{route.priority}</span>
+      <ul className="route-details">
+        {route.indexFallback && <li>Root Index Fallback</li>}
+        {route.autoIndex && <li>Auto Index</li>}
+        {route.trimRoute && <li>Trim Route</li>}
+      </ul>
+    </div>
+  );
 }
 
 function App({ app, refresh }) {
   const deleteApp = () => {
-    fetch(PROXY_API_PREFIX + "/__proxy__/api", {
+    fetch("/__proxy__/api", {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id: app.id })
@@ -118,9 +125,11 @@ const Input = ({
 
 const AddStaticAppPanel = ({ name, route, priority, refresh, close }) => {
   const [staticDir, setStaticDir] = useState("");
+  const [indexFallback, setIndexFallback] = useState(false);
+  const [autoIndex, setAutoIndex] = useState(false);
 
   const addApp = async () => {
-    await fetch(PROXY_API_PREFIX + "/__proxy__/api", {
+    await fetch("/__proxy__/api", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -131,7 +140,9 @@ const AddStaticAppPanel = ({ name, route, priority, refresh, close }) => {
             static: true,
             route: route || "/default/route",
             priority: parseInt(priority) || 0,
-            staticDir: staticDir || "/default/static/dir/"
+            staticDir: staticDir || "/default/static/dir/",
+            indexFallback,
+            autoIndex
           }
         ]
       })
@@ -148,6 +159,18 @@ const AddStaticAppPanel = ({ name, route, priority, refresh, close }) => {
         onChange={setStaticDir}
         placeholder="/a/filesystem/path/"
       />
+      <Input
+        type="checkbox"
+        title="Index Fallback"
+        value={indexFallback}
+        onChange={setIndexFallback}
+      />
+      <Input
+        type="checkbox"
+        title="Auto Index"
+        value={autoIndex}
+        onChange={setAutoIndex}
+      />
       <button onClick={addApp}>Add App</button>
     </div>
   );
@@ -159,7 +182,7 @@ const AddProxyAppPanel = ({ name, route, priority, refresh, close }) => {
   const [trimRoute, setTrimRoute] = useState(false);
 
   const addApp = async () => {
-    await fetch(PROXY_API_PREFIX + "/__proxy__/api", {
+    await fetch("/__proxy__/api", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -262,9 +285,7 @@ function Apps({ showSystem, showAddModal, closeModal }) {
   const refresh = async () => {
     try {
       setLoading(true);
-      const res = await (await fetch(
-        PROXY_API_PREFIX + "/__proxy__/api"
-      )).json();
+      const res = await (await fetch("/__proxy__/api")).json();
       setApps(res);
       setLoading(false);
     } catch (e) {

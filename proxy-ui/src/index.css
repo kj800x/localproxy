@@ -129,3 +129,9 @@ a {
 .priority {
   float: right;
 }
+
+ul.route-details {
+  margin: 0;
+  font-size: small;
+  list-style: circle;
+}
