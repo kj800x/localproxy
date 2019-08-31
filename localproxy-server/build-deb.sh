@@ -15,8 +15,8 @@ npm run build
 cd ..
 
 # Set up the structure for the deb file
-mkdir -p build/localproxy_1.0-1
-cd build/localproxy_1.0-1
+mkdir -p build/localproxy_0.0.2-1
+cd build/localproxy_0.0.2-1
 
 # Fetch nodejs binary
 npm install -g n
@@ -70,7 +70,7 @@ $HERE
 mkdir DEBIAN
 cat - > DEBIAN/control <<$HERE
 Package: localproxy
-Version: 1.0-1
+Version: 0.0.2-1
 Section: base
 Priority: optional
 Architecture: amd64
@@ -102,5 +102,5 @@ chmod +x DEBIAN/postrm
 
 # Build the deb file
 cd ..
-chown -R root localproxy_1.0-1
-dpkg-deb --build localproxy_1.0-1
+chown -R root localproxy_0.0.2-1
+dpkg-deb --build localproxy_0.0.2-1

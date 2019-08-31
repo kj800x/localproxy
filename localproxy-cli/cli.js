@@ -3,7 +3,7 @@
 const path = require("path");
 const process = require("process");
 
-const localproxy = require("./client");
+const localproxy = require("@kj800x/localproxy-client");
 
 const CWD = process.cwd();
 
