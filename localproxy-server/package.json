@@ -9,5 +9,9 @@
     "install-deb": "sudo dpkg -i build/*deb"
   },
   "author": "Kevin Johnson <kevin@kj800x.com>",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/kj800x/localproxy.git"
+  },
   "license": "MIT"
 }

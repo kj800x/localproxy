@@ -6,6 +6,10 @@
     "localproxy": "cli.js"
   },
   "author": "Kevin Johnson <kevin@kj800x.com>",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/kj800x/localproxy.git"
+  },
   "license": "MIT",
   "dependencies": {
     "@kj800x/localproxy-client": "0.0.2"

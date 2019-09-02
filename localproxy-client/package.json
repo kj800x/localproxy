@@ -4,5 +4,9 @@
   "description": "A client to help register and unregister apps for localproxy",
   "main": "client.js",
   "author": "Kevin Johnson <kevin@kj800x.com>",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/kj800x/localproxy.git"
+  },
   "license": "MIT"
 }
