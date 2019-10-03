@@ -80,7 +80,7 @@ function loadApp(args) {
   return buildServeCwdApp(args);
 }
 
-function main() {
+async function main() {
   const args = parseArgv();
   const app = loadApp(args);
 
@@ -89,10 +89,10 @@ function main() {
   }
 
   if (args.deregister) {
-    localproxy.deregister(app);
+    await localproxy.deregister(app);
     return;
   }
-  localproxy.register(app);
+  await localproxy.register(app);
 
   if (args.background) {
     return;
@@ -100,11 +100,11 @@ function main() {
   // Keep alive
   process.stdin.resume();
 
-  process.on("SIGINT", () => {
-    localproxy.deregister(app);
+  process.on("SIGINT", async () => {
+    await localproxy.deregister(app);
 
     process.stdin.pause();
   });
 }
 
-main();
+main().catch(console.error);

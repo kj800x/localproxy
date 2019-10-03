@@ -1,7 +1,7 @@
 {
   "name": "@kj800x/localproxy-client",
-  "version": "0.0.2",
-  "description": "A client to help register and unregister apps for localproxy",
+  "version": "0.0.4",
+  "description": "A client to help register and deregister apps for localproxy",
   "main": "client.js",
   "author": "Kevin Johnson <kevin@kj800x.com>",
   "repository": {

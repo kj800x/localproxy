@@ -1,6 +1,6 @@
 {
   "name": "@kj800x/localproxy-cli",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "description": "A CLI for configuring localproxy apps",
   "bin": {
     "localproxy": "cli.js"
@@ -12,6 +12,6 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@kj800x/localproxy-client": "0.0.2"
+    "@kj800x/localproxy-client": "0.0.4"
   }
 }
