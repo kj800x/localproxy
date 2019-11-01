@@ -1,9 +1,20 @@
+#!/usr/bin/env node
+
 const localproxy = require("@kj800x/localproxy-client");
 const net = require("net");
 const reactScriptsBin = require.resolve(".bin/react-scripts");
 const execa = require("execa");
+const path = require("path");
+const process = require("process");
 
-// Allocate a port
+const CWD = process.cwd();
+
+const DEFAULT_ROUTES_JSON = {
+  id: CWD,
+  name: path.basename(CWD),
+  routes: []
+};
+
 const getAvailablePort = options =>
   new Promise((resolve, reject) => {
     const server = net.createServer();
@@ -17,40 +28,61 @@ const getAvailablePort = options =>
     });
   });
 
-async function main() {
-  const port = await getAvailablePort();
+function readRoutesJson() {
+  try {
+    return require(path.join(CWD, "routes.json"));
+  } catch (e) {
+    if (e.message.includes("Cannot find module")) {
+      return null;
+    } else {
+      throw e;
+    }
+  }
+}
 
-  const localproxyApp = {
-    id: "alldex-client-dev",
-    name: "Alldex Client Dev",
+function processRoutesJson(routesJson, reactScriptsPort) {
+  return {
+    id: routesJson.id || routesJson.name || CWD,
+    name: routesJson.name || path.basename(CWD),
     routes: [
       {
         static: false,
         route: "/",
         hostname: "localhost",
-        port,
+        port: reactScriptsPort,
         trimRoute: false,
-        priority: 1
-      }
+        priority: 100
+      },
+      ...(routesJson.routes || []).map(route => ({
+        ...route,
+        priority: route.priority || 0,
+        staticDir: route.staticDir
+          ? path.resolve(CWD, route.staticDir) + "/"
+          : undefined
+      }))
     ]
   };
+}
 
-  localproxy.register(localproxyApp);
+async function main() {
+  const port = await getAvailablePort();
 
-  let child;
-  try {
-    child = execa(reactScriptsBin, ["start"], {
-      env: { PORT: port, BROWSER: "none" },
-      stdio: "inherit",
-      reject: false
-    });
-  } catch (e) {}
+  const localproxyApp = processRoutesJson(
+    readRoutesJson() || DEFAULT_ROUTES_JSON,
+    port
+  );
 
-  process.on("SIGINT", () => {
-    localproxy.deregister(localproxyApp);
+  await localproxy.register(localproxyApp);
+
+  process.on("SIGINT", async () => {
+    await localproxy.deregister(localproxyApp);
   });
 
-  await child;
+  await execa(reactScriptsBin, ["start"], {
+    env: { PORT: port, BROWSER: "none" },
+    stdio: "inherit",
+    reject: false
+  });
 }
 
 main().catch(console.error);
