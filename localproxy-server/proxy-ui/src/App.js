@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
-
 import Loader from "react-loaders";
+import { FaTools, FaPlus, FaTrash } from "react-icons/fa";
+import { MdClose } from "react-icons/md";
 
 function UIModal({ children, close, title }) {
   return (
@@ -12,7 +12,12 @@ function UIModal({ children, close, title }) {
         <div className="modal">
           <h3 className="modal-top">
             {title}
-            <UIIcon color="#d94c53" icon="❌" onClick={close} />
+            <UIIcon
+              color="#d94c53"
+              iconColor="#2d3e50"
+              Icon={MdClose}
+              onClick={close}
+            />
           </h3>
           <div className="modal-children">{children}</div>
         </div>
@@ -21,7 +26,7 @@ function UIModal({ children, close, title }) {
   );
 }
 
-function UIIcon({ icon, color, onClick, iconColor }) {
+function UIIcon({ Icon, color, onClick, iconColor }) {
   return (
     <span
       className="icon"
@@ -32,9 +37,7 @@ function UIIcon({ icon, color, onClick, iconColor }) {
       onClick={onClick}
       role={onClick ? "button" : undefined}
     >
-      <span className="icon-text" style={iconColor ? { color: iconColor } : {}}>
-        {icon}
-      </span>
+      <Icon size=".7em" color={iconColor} />
     </span>
   );
 }
@@ -87,8 +90,17 @@ function App({ app, refresh }) {
     <div className="app">
       <h2>
         {app.name}
-        {!app.system && <UIIcon color="#d94c53" icon="🗑" onClick={deleteApp} />}
-        {app.system && <UIIcon color="#00a38d" icon="🛠" />}
+        {!app.system && (
+          <UIIcon
+            color="#d94c53"
+            iconColor="#2d3e50"
+            Icon={FaTrash}
+            onClick={deleteApp}
+          />
+        )}
+        {app.system && (
+          <UIIcon iconColor="#2d3e50" color="#00a38d" Icon={FaTools} />
+        )}
       </h2>
       <div className="routes">
         {app.routes.map(route => (
@@ -344,13 +356,14 @@ function ReactApp() {
           localproxy
           <UIIcon
             color="#6a78d1"
-            icon="➕"
+            iconColor="#2d3e50"
+            Icon={FaPlus}
             onClick={() => setShowAddModal(true)}
           />
           <UIIcon
             color="#00a38d"
-            iconColor={showSystem ? "#e5f5f8" : undefined}
-            icon="🛠"
+            iconColor={showSystem ? "#e5f5f8" : "#2d3e50"}
+            Icon={FaTools}
             onClick={() => setShowSystem(!showSystem)}
           />
         </h1>
