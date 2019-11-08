@@ -3,6 +3,6 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import "react-tabs/style/react-tabs.css";
 import "loaders.css/loaders.css";
-import App from "./App";
+import ReactApp from "./ReactApp";
 
-ReactDOM.render(<App />, document.getElementById("root"));
+ReactDOM.render(<ReactApp />, document.getElementById("root"));

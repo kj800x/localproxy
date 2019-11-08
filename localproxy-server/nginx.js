@@ -29,7 +29,7 @@ const getAutoIndex = route =>
 const getRouteBody = route => {
   if (route.static) {
     return `
-      alias ${route.staticDir};
+      alias "${route.staticDir}";
       ${getAllowDeny(route.app.system)}
       ${getTryFiles(route)}
       ${getAutoIndex(route)}
