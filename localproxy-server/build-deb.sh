@@ -15,8 +15,8 @@ npm run build
 cd ..
 
 # Set up the structure for the deb file
-mkdir -p build/localproxy_0.0.2-1
-cd build/localproxy_0.0.2-1
+mkdir -p build/localproxy_0.0.3-1
+cd build/localproxy_0.0.3-1
 
 # Fetch nodejs binary
 npm install -g n
@@ -41,7 +41,7 @@ chmod 755 usr/bin/reload-nginx
 ## Install the sudoers exception for reload-nginx
 mkdir -p etc/sudoers.d
 cat - > etc/sudoers.d/localproxy <<$HERE
-ALL ALL = NOPASSWD: /usr/bin/reload-nginx 
+ALL ALL = NOPASSWD: /usr/bin/reload-nginx
 $HERE
 chmod 440 etc/sudoers.d/localproxy
 
@@ -70,14 +70,14 @@ $HERE
 mkdir DEBIAN
 cat - > DEBIAN/control <<$HERE
 Package: localproxy
-Version: 0.0.2-1
+Version: 0.0.3-1
 Section: base
 Priority: optional
 Architecture: amd64
 Depends: nginx (>= 1.14.0)
 Maintainer: Kevin Johnson <kevin@kj800x.com>
 Description: localproxy
- Dynamically run multiple web applications 
+ Dynamically run multiple web applications
  on routes on http://localhost:80.
 
 $HERE
@@ -85,7 +85,9 @@ $HERE
 cat - > DEBIAN/postinst <<$HERE
 #!/bin/bash
 id -u localproxy &>/dev/null || adduser --quiet --system --no-create-home --home /usr/local/share/localproxy --shell /usr/sbin/nologin localproxy
+mkdir -p /etc/localproxy
 chown localproxy /etc/nginx/conf.d/localproxy.conf
+chown localproxy /etc/localproxy
 systemctl daemon-reload
 systemctl start localproxy.service
 systemctl enable localproxy.service
@@ -102,5 +104,5 @@ chmod +x DEBIAN/postrm
 
 # Build the deb file
 cd ..
-chown -R root localproxy_0.0.2-1
-dpkg-deb --build localproxy_0.0.2-1
+chown -R root localproxy_0.0.3-1
+dpkg-deb --build localproxy_0.0.3-1
