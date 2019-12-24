@@ -13,8 +13,6 @@ function parseArgv() {
     process.argv.includes(x) ? process.argv[process.argv.indexOf(x) + 1] : null;
 
   return {
-    background: flag("-b"),
-    deregister: flag("-d"),
     verbose: flag("-v"),
     route: namedArg("--route"),
     id: namedArg("--index"),
@@ -88,15 +86,8 @@ async function main() {
     console.log(app);
   }
 
-  if (args.deregister) {
-    await localproxy.deregister(app);
-    return;
-  }
   await localproxy.register(app);
 
-  if (args.background) {
-    return;
-  }
   // Keep alive
   process.stdin.resume();
 

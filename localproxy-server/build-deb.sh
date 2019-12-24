@@ -15,8 +15,8 @@ npm run build
 cd ..
 
 # Set up the structure for the deb file
-mkdir -p build/localproxy_0.0.3-1
-cd build/localproxy_0.0.3-1
+mkdir -p build/localproxy_0.0.3-2
+cd build/localproxy_0.0.3-2
 
 # Fetch nodejs binary
 npm install -g n
@@ -70,7 +70,7 @@ $HERE
 mkdir DEBIAN
 cat - > DEBIAN/control <<$HERE
 Package: localproxy
-Version: 0.0.3-1
+Version: 0.0.3-2
 Section: base
 Priority: optional
 Architecture: amd64
@@ -85,9 +85,13 @@ $HERE
 cat - > DEBIAN/postinst <<$HERE
 #!/bin/bash
 id -u localproxy &>/dev/null || adduser --quiet --system --no-create-home --home /usr/local/share/localproxy --shell /usr/sbin/nologin localproxy
+id -g localproxyusers &>/dev/null || addgroup --quiet --system localproxyusers
 mkdir -p /etc/localproxy
 chown localproxy /etc/nginx/conf.d/localproxy.conf
 chown localproxy /etc/localproxy
+chgrp localproxyusers /etc/localproxy
+chmod g+s /etc/localproxy
+chmod 775 /etc/localproxy
 systemctl daemon-reload
 systemctl start localproxy.service
 systemctl enable localproxy.service
@@ -104,5 +108,5 @@ chmod +x DEBIAN/postrm
 
 # Build the deb file
 cd ..
-chown -R root localproxy_0.0.3-1
-dpkg-deb --build localproxy_0.0.3-1
+chown -R root localproxy_0.0.3-2
+dpkg-deb --build localproxy_0.0.3-2

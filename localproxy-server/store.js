@@ -19,6 +19,7 @@ const forceSync = () => {
       apps[app["id"]] = app;
     } catch (e) {}
   }
+  nginx.sync(getApps());
 };
 
 const startup = () => fs.watch(WATCH_DIR, forceSync);
@@ -29,7 +30,6 @@ function register(payload) {
   const file = `${sanitize(payload.id)}.json`;
   fs.writeFileSync(path.join(WATCH_DIR, file), JSON.stringify(payload));
   forceSync();
-  nginx.sync(getApps());
 }
 
 function deRegister(id) {
@@ -38,7 +38,6 @@ function deRegister(id) {
     fs.unlinkSync(path.join(WATCH_DIR, file));
   }
   forceSync();
-  nginx.sync(getApps());
 }
 
 module.exports = {

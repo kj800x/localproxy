@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 const localproxy = require("@kj800x/localproxy-client");
-const net = require("net");
 const reactScriptsBin = require.resolve(".bin/react-scripts");
 const execa = require("execa");
 const path = require("path");
@@ -14,19 +13,6 @@ const DEFAULT_ROUTES_JSON = {
   name: path.basename(CWD),
   routes: []
 };
-
-const getAvailablePort = options =>
-  new Promise((resolve, reject) => {
-    const server = net.createServer();
-    server.unref();
-    server.on("error", reject);
-    server.listen(options, () => {
-      const { port } = server.address();
-      server.close(() => {
-        resolve(port);
-      });
-    });
-  });
 
 function readRoutesJson() {
   try {
@@ -65,7 +51,7 @@ function processRoutesJson(routesJson, reactScriptsPort) {
 }
 
 async function main() {
-  const port = await getAvailablePort();
+  const port = await localproxy.getAvailablePort();
 
   const localproxyApp = processRoutesJson(
     readRoutesJson() || DEFAULT_ROUTES_JSON,

@@ -1,6 +1,6 @@
 {
   "name": "@kj800x/localproxy-client",
-  "version": "0.0.4",
+  "version": "0.0.8",
   "description": "A client to help register and deregister apps for localproxy",
   "main": "client.js",
   "author": "Kevin Johnson <kevin@kj800x.com>",
@@ -8,5 +8,8 @@
     "type": "git",
     "url": "git://github.com/kj800x/localproxy.git"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "tmp": "^0.1.0"
+  }
 }
