@@ -1,6 +1,6 @@
 const fs = require("fs");
 const path = require("path");
-
+const rimraf = require("rimraf");
 const nginx = require("./nginx");
 
 const WATCH_DIR = "/etc/localproxy";
@@ -22,7 +22,18 @@ const forceSync = () => {
   nginx.sync(getApps());
 };
 
-const startup = () => fs.watch(WATCH_DIR, forceSync);
+const startup = () => {
+  return new Promise((resolve, reject) => {
+    rimraf(path.join(WATCH_DIR, "*"), err => {
+      if (err) {
+        reject(err);
+        return;
+      }
+      fs.watch(WATCH_DIR, forceSync);
+      resolve();
+    });
+  });
+};
 
 const getApps = () => Object.values(apps);
 

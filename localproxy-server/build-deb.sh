@@ -14,9 +14,11 @@ npm i
 npm run build
 cd ..
 
+export VERSION="0.0.3-3"
+
 # Set up the structure for the deb file
-mkdir -p build/localproxy_0.0.3-2
-cd build/localproxy_0.0.3-2
+mkdir -p build/localproxy_$VERSION
+cd build/localproxy_$VERSION
 
 # Fetch nodejs binary
 npm install -g n
@@ -68,9 +70,9 @@ $HERE
 
 # Deb stuff
 mkdir DEBIAN
-cat - > DEBIAN/control <<$HERE
+cat - > DEBIAN/control << HERE
 Package: localproxy
-Version: 0.0.3-2
+Version: $VERSION
 Section: base
 Priority: optional
 Architecture: amd64
@@ -79,8 +81,7 @@ Maintainer: Kevin Johnson <kevin@kj800x.com>
 Description: localproxy
  Dynamically run multiple web applications
  on routes on http://localhost:80.
-
-$HERE
+HERE
 
 cat - > DEBIAN/postinst <<$HERE
 #!/bin/bash
@@ -108,5 +109,5 @@ chmod +x DEBIAN/postrm
 
 # Build the deb file
 cd ..
-chown -R root localproxy_0.0.3-2
-dpkg-deb --build localproxy_0.0.3-2
+chown -R root localproxy_$VERSION
+dpkg-deb --build localproxy_$VERSION

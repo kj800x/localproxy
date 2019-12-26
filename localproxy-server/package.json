@@ -13,5 +13,8 @@
     "type": "git",
     "url": "git://github.com/kj800x/localproxy.git"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "rimraf": "^3.0.0"
+  }
 }
