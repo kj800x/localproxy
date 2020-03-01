@@ -5,7 +5,7 @@ import UIIcon from "./UIIcon";
 
 function ReactApp() {
   const [showSystem, setShowSystem] = useState(false);
-  const [showAddModal, setShowAddModal] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(true);
 
   return (
     <div className="ReactApp">

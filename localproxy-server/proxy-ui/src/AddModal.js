@@ -1,60 +1,61 @@
-import React, { useState } from "react";
-import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
+import React, { /*useState,*/ useReducer } from "react";
+// import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import UIModal from "./UIModal";
 import Input from "./Input";
-import AddStaticAppPanel from "./AddStaticAppPanel";
-import AddProxyAppPanel from "./AddProxyAppPanel";
+// import AddStaticAppPanel from "./AddStaticAppPanel";
+// import AddProxyAppPanel from "./AddProxyAppPanel";
+import Arrow from "./Arrow";
+
+const emptyRoute = {
+  type: "static",
+};
+
+const initialState = {
+  name: "",
+  routes: []
+}
+
+const addReducer = (state, action) => {
+  switch (action.type) {
+    case "SET_NAME":
+      return {
+        ...state,
+        name: action.payload.name
+      }
+      case "SET_ROUTE":
+        return {
+          ...state,
+          name: action.payload.name
+        }
+    default: 
+      return state;
+  }
+}
+
+const RouteEditor = ({dispatch, data, index, ghost}) => {
+  return <div>
+    <input type="text" placeholder="route" value={data && data.route || ""} onChange={({target: { value }}) => dispatch({type: "SET_ROUTE", payload: {index, route: value}})}/>
+    <Arrow />
+    <input type="text" placeholder="target" value={data && data.target || ""} onChange={({target: { value }}) => dispatch({type: "SET_TARGET", payload: {index, target: value}})}/>
+  </div>
+}
 
 const AddModal = ({ close, refresh }) => {
-  const [name, setName] = useState("");
-  const [route, setRoute] = useState("");
-  const [priority, setPriority] = useState("0");
+  const [state, dispatch] = useReducer(addReducer, initialState);
 
   return (
-    <UIModal close={close} title="Manually Add App">
+    <UIModal close={close} title="Add App">
       <Input
         title="Name"
-        value={name}
-        onChange={setName}
-        placeholder={"An App Name"}
+        value={state.name}
+        onChange={(name) => dispatch({type: "SET_NAME", payload: {name}})}
+        placeholder="App Name"
       />
-      <Input
-        title="Route"
-        value={route}
-        onChange={setRoute}
-        placeholder={"/a/route"}
-      />
-      <Input
-        title="Priority"
-        type="number"
-        value={priority}
-        onChange={setPriority}
-        placeholder={"0"}
-      />
-      <Tabs>
-        <TabList>
-          <Tab>Static</Tab>
-          <Tab>Proxy</Tab>
-        </TabList>
-        <TabPanel>
-          <AddStaticAppPanel
-            name={name}
-            route={route}
-            priority={priority}
-            refresh={refresh}
-            close={close}
-          />
-        </TabPanel>
-        <TabPanel>
-          <AddProxyAppPanel
-            name={name}
-            route={route}
-            priority={priority}
-            refresh={refresh}
-            close={close}
-          />
-        </TabPanel>
-      </Tabs>
+      <button onClick={() => dispatch({type: "ADD_ROUTE"})}></button>
+      {state.routes.map((route, i) => 
+        <RouteEditor key={i} dispatch={dispatch} data={route} index={i} />
+      )}
+      <RouteEditor dispatch={dispatch} data={undefined} index={state.routes.length} ghost={true}/>
     </UIModal>
   );
 };
