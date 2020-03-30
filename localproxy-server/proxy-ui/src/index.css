@@ -47,7 +47,7 @@ header {
 
 a {
   text-decoration: none;
-  color: #00a4bd;
+  color: inherit;
 }
 
 .icon {

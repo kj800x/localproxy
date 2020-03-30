@@ -4,9 +4,11 @@ const { execSync } = require("child_process");
 const getAllowDeny = restrictAccess =>
   restrictAccess
     ? `
-        allow 127.0.0.1;
-        allow ::1;
-        deny all;
+        limit_except GET {
+          allow 127.0.0.1;
+          allow ::1;
+          deny all;
+        }
       `
     : "";
 
@@ -71,6 +73,22 @@ const template = routes =>
     listen [::]:80 default_server;
 
     index index.html;
+
+    error_page 404 /404.html;
+    location = /404.html {
+      root ` +
+  __dirname +
+  `/proxy-ui/build/;
+      internal;
+    }
+
+    error_page 500 502 503 504 /50x.html;
+    location = /50x.html {
+      root ` +
+  __dirname +
+  `/proxy-ui/build/;
+      internal;
+    }
 
     add_header Cache-Control no-cache;
     expires -1;
