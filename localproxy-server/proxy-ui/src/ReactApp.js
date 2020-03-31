@@ -13,7 +13,9 @@ function ReactApp() {
     <div className="ReactApp">
       <header>
         <h1>
-          <a href="/__proxy__/">localproxy</a>
+          <a href="/__proxy__/" class="no-color">
+            localproxy
+          </a>
           {isLocal && (
             <>
               <UIIcon

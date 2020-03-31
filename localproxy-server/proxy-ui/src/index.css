@@ -47,7 +47,11 @@ header {
 
 a {
   text-decoration: none;
-  color: inherit;
+  color: #00a4bd;
+}
+
+.no-color {
+  color: inherit !important;
 }
 
 .icon {

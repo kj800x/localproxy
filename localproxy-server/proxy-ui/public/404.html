@@ -55,7 +55,11 @@
 
       a {
         text-decoration: none;
-        color: inherit;
+        color: #00a4bd;
+      }
+
+      .no-color {
+        color: inherit !important;
       }
 
       .icon {
@@ -1716,15 +1720,15 @@
     <div id="root">
       <div class="ReactApp">
         <header>
-          <h1><a href="/__proxy__/">localproxy</a></h1>
+          <h1><a href="/__proxy__/" class="no-color">localproxy</a></h1>
         </header>
         <div class="apps">
           <span class="noRoutes">
             404
             <br />
             <br />
-            <a href="/__proxy__/">localproxy</a> doesn't know where to send that
-            request
+            <a href="/__proxy__/" class="no-color">localproxy</a> doesn't know
+            where to send that request
           </span>
         </div>
       </div>

@@ -1,5 +1,19 @@
 const fs = require("fs");
 const { execSync } = require("child_process");
+const nginxBeautifier = require("nginxbeautifier/nginxbeautifier");
+
+const pipeSingle = (a, b) => arg => b(a(arg));
+const pipe = (...ops) => ops.reduce(pipeSingle);
+
+const format = pipe(
+  nginxBeautifier.clean_lines,
+  lines => lines.map(line => line.trim()),
+  lines => lines.filter(line => line),
+  nginxBeautifier.join_opening_bracket,
+  nginxBeautifier.perform_indentation,
+  // nginxBeautifier.perform_alignment,
+  lines => lines.join("\n") + "\n"
+);
 
 const getAllowDeny = restrictAccess =>
   restrictAccess
@@ -15,7 +29,7 @@ const getAllowDeny = restrictAccess =>
 const getTryFiles = route =>
   route.indexFallback
     ? `
-        try_files $uri $uri/ /index.html;
+        try_files $uri $uri/ ${route.route}/index.html;
       `
     : "";
 
@@ -63,7 +77,8 @@ const renderRoute = route => {
 };
 
 const template = routes =>
-  `
+  format(
+    `
   log_format scripts '$document_root | $uri | > $request';
 
   server {
@@ -77,31 +92,27 @@ const template = routes =>
     error_page 404 /404.html;
     location = /404.html {
       root ` +
-  __dirname +
-  `/proxy-ui/build/;
+      __dirname +
+      `/proxy-ui/build/;
       internal;
     }
 
     error_page 500 502 503 504 /50x.html;
     location = /50x.html {
       root ` +
-  __dirname +
-  `/proxy-ui/build/;
+      __dirname +
+      `/proxy-ui/build/;
       internal;
     }
 
     add_header Cache-Control no-cache;
     expires -1;
 
-    # DEVBUILD: Uncomment these
-    # add_header Access-Control-Allow-Origin *;
-    # add_header Access-Control-Allow-Methods *;
-    # add_header Access-Control-Allow-Headers *;
-
     server_name localproxy;
 ${routes.map(renderRoute).join("\n")}
   }
-`;
+`
+  );
 
 const buildFinalRoutes = apps => {
   const routes = {};
