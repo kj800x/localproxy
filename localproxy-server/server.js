@@ -4,14 +4,14 @@ const http = require("http");
 
 const store = require("./store");
 
-const getBody = req =>
+const getBody = (req) =>
   new Promise((acc, rej) => {
     body = [];
     req
-      .on("error", err => {
+      .on("error", (err) => {
         rej(err);
       })
-      .on("data", chunk => {
+      .on("data", (chunk) => {
         body.push(chunk);
       })
       .on("end", () => {
@@ -32,26 +32,26 @@ store.startup().then(() => {
       system: true,
       routes: [
         {
+          static: true,
+          route: "/__proxy__",
+          staticDir: __dirname + "/proxy-ui/build/",
+          priority: 9998,
+        },
+        {
           static: false,
           route: "/__proxy__/api",
           hostname: "localhost",
           port: port,
           trimRoute: true,
-          priority: 9999
-        },
-        {
-          static: true,
-          route: "/__proxy__",
-          staticDir: __dirname + "/proxy-ui/build/",
-          priority: 0
+          priority: 9999,
         },
         {
           static: true,
           route: "/",
           staticDir: __dirname + "/proxy-ui/build/",
-          priority: -1
-        }
-      ]
+          priority: -1,
+        },
+      ],
     });
   });
 

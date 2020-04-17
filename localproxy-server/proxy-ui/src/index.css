@@ -31,10 +31,13 @@ header {
 }
 
 .apps > .app > h2 {
-  color: #6a78d1;
   padding-bottom: 2px;
   border-bottom: 1px solid #516f90;
   margin-bottom: 12px;
+}
+
+.apps > .app > h2 > a {
+  color: #6a78d1;
 }
 
 .route {

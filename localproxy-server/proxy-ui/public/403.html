@@ -4,7 +4,7 @@
     <link rel="icon" href="/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#2d3e50" />
-    <title>404 - localproxy</title>
+    <title>403 - localproxy</title>
     <style>
       body {
         margin: 0;
@@ -81,11 +81,21 @@
         </header>
         <div class="apps">
           <span class="noRoutes">
-            <p class="errorCode">Error 404</p>
+            <p class="errorCode">Error 403</p>
 
             <p class="summary">
-              <a href="/__proxy__/">localproxy</a> doesn't have a route which
-              matches that request.
+              <a href="/__proxy__/">localproxy</a> reached a 403 condition when
+              trying to serve that request.
+            </p>
+
+            <p class="details">
+              This is usually happens when a static directory matches the route
+              but the route doesn't match a file in that directory.
+            </p>
+
+            <p class="details">
+              Does your request match a file in your directory? Did you forget
+              to enable "Auto Index" or "Index Fallback"?
             </p>
           </span>
         </div>

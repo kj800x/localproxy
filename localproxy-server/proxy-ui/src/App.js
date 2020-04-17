@@ -8,14 +8,14 @@ function App({ app, refresh }) {
     fetch("/__proxy__/api", {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: app.id })
+      body: JSON.stringify({ id: app.id }),
     }).then(refresh);
   };
 
   return (
     <div className="app">
       <h2>
-        {app.name}
+        <a href={app.routes[0].route}>{app.name}</a>
         {!app.system && (
           <UIIcon
             color="#d94c53"
@@ -29,7 +29,7 @@ function App({ app, refresh }) {
         )}
       </h2>
       <div className="routes">
-        {app.routes.map(route => (
+        {app.routes.map((route) => (
           <Route key={route.route} route={route} />
         ))}
       </div>
