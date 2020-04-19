@@ -1,0 +1,45 @@
+.tag {
+  font-size: x-small;
+}
+
+.tag-container {
+  width: 30px;
+  display: inline-flex;
+  margin-right: 4px;
+  justify-content: center;
+  align-items: center;
+  height: 1.2em;
+  border-radius: 10px;
+  border: 2px solid;
+  color: #33475b;
+}
+
+.color-oz {
+  border-color: #00bda5;
+  background: #e5f8f6;
+}
+
+.color-norman {
+  border-color: #f2547d;
+  background: #fdedf2;
+}
+
+.color-thunderdome {
+  border-color: #6a78d1;
+  background: #f0f1fa;
+}
+
+.color-marigold {
+  border-color: #f5c26b;
+  background: #fef8f0;
+}
+
+.color-sorbet {
+  border-color: #ff8f59;
+  background: #fff3ee;
+}
+
+.color-purple {
+  border-color: #bda9ea;
+  background: #f4f0ff;
+}
