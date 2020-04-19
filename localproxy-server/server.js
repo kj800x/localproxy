@@ -36,6 +36,7 @@ store.startup().then(() => {
           route: "/__proxy__",
           staticDir: __dirname + "/proxy-ui/build/",
           priority: 9998,
+          type: "ui",
         },
         {
           static: false,
@@ -44,12 +45,14 @@ store.startup().then(() => {
           port: port,
           trimRoute: true,
           priority: 9999,
+          type: "api",
         },
         {
           static: true,
           route: "/",
           staticDir: __dirname + "/proxy-ui/build/",
           priority: -1,
+          type: "ui",
         },
       ],
     });
