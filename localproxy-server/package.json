@@ -16,6 +16,7 @@
   "license": "MIT",
   "dependencies": {
     "nginxbeautifier": "^1.0.18",
+    "ps-node": "^0.1.6",
     "rimraf": "^3.0.0",
     "ws": "^7.2.3"
   }

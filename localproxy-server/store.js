@@ -1,6 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const rimraf = require("rimraf");
+const ps = require("ps-node");
 const nginx = require("./nginx");
 
 const WATCH_DIR = "/etc/localproxy";
@@ -53,6 +54,28 @@ function deRegister(id) {
   }
   forceSync();
 }
+
+const isProcessRunning = (pid) =>
+  new Promise((acc, rej) => {
+    ps.lookup({ pid, psargs: ["alx"] }, (err, results) => {
+      if (err) {
+        rej(err);
+      } else {
+        acc(results.length === 1);
+      }
+    });
+  });
+
+const pruneDeadApps = async () => {
+  const apps = getApps();
+  for (let app of apps) {
+    if (app.pid && app.pid !== -1 && !(await isProcessRunning(app.pid))) {
+      deRegister(app.id);
+    }
+  }
+};
+
+setInterval(pruneDeadApps, 1000);
 
 module.exports = {
   startup,
