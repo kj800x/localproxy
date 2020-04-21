@@ -14,7 +14,7 @@ npm i
 npm run build
 cd ..
 
-export VERSION="0.0.5"
+export VERSION="0.0.6"
 
 # Set up the structure for the deb file
 mkdir -p build/localproxy_$VERSION
