@@ -86,6 +86,7 @@ HERE
 
 cat - > DEBIAN/postinst <<$HERE
 #!/bin/bash
+[ -f /etc/nginx/sites-enabled/default ] && mv /etc/nginx/sites-enabled/default /etc/nginx/.default-site_disabled_by_localproxy
 id -u localproxy &>/dev/null || adduser --quiet --system --no-create-home --home /usr/local/share/localproxy --shell /usr/sbin/nologin localproxy
 id -g localproxyusers &>/dev/null || addgroup --quiet --system localproxyusers
 mkdir -p /etc/localproxy
@@ -103,7 +104,9 @@ chmod +x DEBIAN/postinst
 
 cat - > DEBIAN/postrm <<$HERE
 #!/bin/bash
+[ -f /etc/nginx/.default-site_disabled_by_localproxy ] && mv /etc/nginx/.default-site_disabled_by_localproxy /etc/nginx/sites-enabled/default
 systemctl disable localproxy.service
+systemctl restart nginx.service
 systemctl daemon-reload
 $HERE
 chmod +x DEBIAN/postrm
