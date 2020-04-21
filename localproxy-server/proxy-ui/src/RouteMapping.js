@@ -22,7 +22,7 @@ function RouteMapping({ route }) {
       <span>
         <a href={route.route}>
           {route.type && (
-            <Tag color={colorByType(route.type)}>{route.type}</Tag>
+            <Tag color={colorByType(route.type)} fixedWidth={true}>{route.type}</Tag>
           )}
           <Tag color="oz" hover="Static">
             S
@@ -37,7 +37,7 @@ function RouteMapping({ route }) {
   return (
     <span>
       <a href={route.route}>
-        {route.type && <Tag color={colorByType(route.type)}>{route.type}</Tag>}
+        {route.type && <Tag color={colorByType(route.type)} fixedWidth={true}>{route.type}</Tag>}
         <Tag color="purple" hover="Dynamic">
           D
         </Tag>
