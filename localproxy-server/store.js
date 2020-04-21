@@ -4,9 +4,11 @@ const rimraf = require("rimraf");
 const nginx = require("./nginx");
 
 const WATCH_DIR = "/etc/localproxy";
-let apps = {};
 
-const sanitize = s => s.replace(/[^a-z0-9]/gi, "_");
+let apps = {};
+let onSyncHandler = () => {};
+
+const sanitize = (s) => s.replace(/[^a-z0-9]/gi, "_");
 
 const forceSync = () => {
   const files = fs.readdirSync(WATCH_DIR);
@@ -19,12 +21,13 @@ const forceSync = () => {
       apps[app["id"]] = app;
     } catch (e) {}
   }
+  onSyncHandler(getApps());
   nginx.sync(getApps());
 };
 
 const startup = () => {
   return new Promise((resolve, reject) => {
-    rimraf(path.join(WATCH_DIR, "*"), err => {
+    rimraf(path.join(WATCH_DIR, "*"), (err) => {
       if (err) {
         reject(err);
         return;
@@ -56,5 +59,6 @@ module.exports = {
   forceSync,
   register,
   deRegister,
-  getApps
+  getApps,
+  onSync: (fn) => (onSyncHandler = fn),
 };

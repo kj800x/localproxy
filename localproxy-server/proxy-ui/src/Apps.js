@@ -24,6 +24,13 @@ function Apps({ showSystem, showAddModal, closeModal }) {
     refresh();
   }, []);
 
+  useEffect(() => {
+    const socket = new WebSocket("ws://localhost/__proxy__/api");
+    socket.onmessage = (message) => {
+      setApps(JSON.parse(message.data));
+    };
+  }, [setApps]);
+
   if (loading) {
     return (
       <div className="apps">
@@ -42,13 +49,15 @@ function Apps({ showSystem, showAddModal, closeModal }) {
     );
   }
 
-  const filteredApps = apps.filter(app => showSystem || !app.system);
+  const filteredApps = apps.filter((app) => showSystem || !app.system);
 
   const renderedApps =
     filteredApps.length === 0 ? (
       <span className="noRoutes">No Routes, Just Right</span>
     ) : (
-      filteredApps.map(app => <App key={app.id} app={app} refresh={refresh} />)
+      filteredApps.map((app) => (
+        <App key={app.id} app={app} refresh={refresh} />
+      ))
     );
 
   return (

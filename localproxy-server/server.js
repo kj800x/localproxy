@@ -1,6 +1,7 @@
 #!/usr/local/share/localproxy/node
 
 const http = require("http");
+const WebSocket = require("ws");
 
 const store = require("./store");
 
@@ -22,6 +23,15 @@ const getBody = (req) =>
 
 store.startup().then(() => {
   const server = http.createServer().listen(0, "localhost");
+  const wss = new WebSocket.Server({ server });
+
+  store.onSync((apps) => {
+    [...wss.clients]
+      .filter((client) => client.readyState === WebSocket.OPEN)
+      .forEach((client) => {
+        client.send(JSON.stringify(apps));
+      });
+  });
 
   server.on("listening", () => {
     const port = server.address().port;
