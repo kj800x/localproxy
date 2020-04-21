@@ -1,4 +1,7 @@
 #!/bin/bash
+
+export VERSION="0.0.7"
+
 if [ "$EUID" -ne 0 ]
   then echo "Please run as root"
   exit
@@ -13,8 +16,6 @@ cd proxy-ui
 npm i
 npm run build
 cd ..
-
-export VERSION="0.0.6"
 
 # Set up the structure for the deb file
 mkdir -p build/localproxy_$VERSION
