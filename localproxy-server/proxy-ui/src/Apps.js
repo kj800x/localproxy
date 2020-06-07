@@ -25,7 +25,7 @@ function Apps({ showSystem, showAddModal, closeModal }) {
   }, []);
 
   useEffect(() => {
-    const socket = new WebSocket("ws://localhost/__proxy__/api");
+    const socket = new WebSocket(`ws://${location.host}/__proxy__/api`);
     socket.onmessage = (message) => {
       setApps(JSON.parse(message.data));
     };
