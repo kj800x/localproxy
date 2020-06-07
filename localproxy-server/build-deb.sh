@@ -76,7 +76,7 @@ Package: localproxy
 Version: $VERSION
 Section: base
 Priority: optional
-Architecture: amd64
+Architecture: all
 Depends: nginx (>= 1.14.0)
 Maintainer: Kevin Johnson <kevin@kj800x.com>
 Description: localproxy
