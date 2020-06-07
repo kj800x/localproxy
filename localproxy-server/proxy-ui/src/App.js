@@ -2,6 +2,7 @@ import React from "react";
 import { FaTools, FaTrash } from "react-icons/fa";
 import UIIcon from "./UIIcon";
 import Route from "./Route";
+import Tag from "./Tag";
 
 function App({ app, refresh }) {
   const deleteApp = () => {
@@ -16,6 +17,11 @@ function App({ app, refresh }) {
     <div className="app">
       <h2>
         <a href={app.routes[0].route}>{app.name}</a>
+        {app.pid && app.pid > -1 && (
+          <Tag color="norman">
+            PID: {app.pid}
+          </Tag>
+        )}
         {!app.system && (
           <UIIcon
             color="#d94c53"

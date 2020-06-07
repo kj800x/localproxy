@@ -3,15 +3,24 @@
 }
 
 .tag-container {
-  width: 30px;
   display: inline-flex;
-  margin-right: 4px;
+  margin: 0 4px;
   justify-content: center;
   align-items: center;
-  height: 1.2em;
-  border-radius: 10px;
+  height: 1em;
   border: 2px solid;
   color: #33475b;
+  vertical-align: bottom;
+  padding: 0 5px;
+}
+
+.tag-container:first-child {
+  margin-left: 0;
+}
+
+.tag-fixed-width {
+  width: 25px;
+  padding: 0;
 }
 
 .color-oz {
