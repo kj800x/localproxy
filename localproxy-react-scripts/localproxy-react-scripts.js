@@ -11,7 +11,7 @@ const CWD = process.cwd();
 const DEFAULT_ROUTES_JSON = {
   id: CWD,
   name: path.basename(CWD),
-  routes: []
+  routes: [],
 };
 
 function readRoutesJson() {
@@ -34,19 +34,19 @@ function processRoutesJson(routesJson, reactScriptsPort) {
       {
         static: false,
         route: "/",
-        hostname: "localhost",
+        hostname: "127.0.0.1",
         port: reactScriptsPort,
         trimRoute: false,
-        priority: 100
+        priority: 100,
       },
-      ...(routesJson.routes || []).map(route => ({
+      ...(routesJson.routes || []).map((route) => ({
         ...route,
         priority: route.priority || 0,
         staticDir: route.staticDir
           ? path.resolve(CWD, route.staticDir) + "/"
-          : undefined
-      }))
-    ]
+          : undefined,
+      })),
+    ],
   };
 }
 
@@ -67,7 +67,7 @@ async function main() {
   await execa(reactScriptsBin, ["start"], {
     env: { PORT: port, BROWSER: "none" },
     stdio: "inherit",
-    reject: false
+    reject: false,
   });
 }
 

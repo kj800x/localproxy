@@ -2,30 +2,19 @@ import React, { useEffect, useState } from "react";
 import Loader from "react-loaders";
 import App from "./App";
 import AddModal from "./AddModal";
+import useApi from "./useApi";
 
 function Apps({ showSystem, showAddModal, closeModal }) {
-  const [error, setError] = useState(false);
-  const [apps, setApps] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [refresh, setRefresh] = useState(0);
+  const doRefresh = () => setRefresh(refresh + 1);
 
-  const refresh = async () => {
-    try {
-      setLoading(true);
-      const res = await (await fetch("/__proxy__/api")).json();
-      setApps(res);
-      setLoading(false);
-    } catch (e) {
-      setError(e);
-      setLoading(false);
-    }
-  };
+  const { data: apps, error, loading, setData: setApps } = useApi({
+    api: "/__proxy__/api",
+    deps: [refresh],
+  });
 
   useEffect(() => {
-    refresh();
-  }, []);
-
-  useEffect(() => {
-    const socket = new WebSocket(`ws://${location.host}/__proxy__/api`);
+    const socket = new WebSocket(`ws://${window.location.host}/__proxy__/api`);
     socket.onmessage = (message) => {
       setApps(JSON.parse(message.data));
     };
@@ -56,14 +45,14 @@ function Apps({ showSystem, showAddModal, closeModal }) {
       <span className="noRoutes">No Routes, Just Right</span>
     ) : (
       filteredApps.map((app) => (
-        <App key={app.id} app={app} refresh={refresh} />
+        <App key={app.id} app={app} refresh={doRefresh} />
       ))
     );
 
   return (
     <div className="apps">
       {renderedApps}
-      {showAddModal && <AddModal close={closeModal} refresh={refresh} />}
+      {showAddModal && <AddModal close={closeModal} refresh={doRefresh} />}
     </div>
   );
 }

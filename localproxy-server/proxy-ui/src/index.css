@@ -15,11 +15,27 @@ header {
   background: #2d3e50;
   color: #eaf0f6;
   padding: 12px;
+  display: flex;
+}
+
+header h1 {
+  flex: 1;
+}
+
+@media only screen and (max-width: 490px) {
+  header h1 {
+    min-height: 2.5em;
+  }
+}
+
+header .icon {
+  font-size: 2em;
 }
 
 .apps {
-  width: 750px;
+  max-width: 750px;
   margin: 0 auto;
+  padding: 4px;
 }
 
 .apps > .app {
@@ -34,6 +50,12 @@ header {
   padding-bottom: 2px;
   border-bottom: 1px solid #516f90;
   margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.apps > .app > h2 > .icon {
+  flex-shrink: 0;
 }
 
 .apps > .app > h2 > a {
@@ -42,6 +64,8 @@ header {
 
 .route {
   margin-top: 5px;
+  display: flex;
+  justify-content: space-between;
 }
 
 .route > .arrow {

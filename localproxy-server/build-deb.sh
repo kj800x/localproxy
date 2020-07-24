@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export VERSION="0.0.7"
+export VERSION="0.0.8"
 
 if [ "$EUID" -ne 0 ]
   then echo "Please run as root"

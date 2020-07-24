@@ -2,6 +2,7 @@
 
 const http = require("http");
 const WebSocket = require("ws");
+const os = require("os");
 
 const store = require("./store");
 
@@ -22,7 +23,7 @@ const getBody = (req) =>
   });
 
 store.startup().then(() => {
-  const server = http.createServer().listen(0, "localhost");
+  const server = http.createServer().listen(0, "127.0.0.1");
   const wss = new WebSocket.Server({ server });
 
   store.onSync((apps) => {
@@ -51,7 +52,7 @@ store.startup().then(() => {
         {
           static: false,
           route: "/__proxy__/api",
-          hostname: "localhost",
+          hostname: "127.0.0.1",
           port: port,
           trimRoute: true,
           priority: 9999,
@@ -81,6 +82,11 @@ store.startup().then(() => {
         const payload = JSON.parse(body);
         store.deRegister(payload.id);
       }
+      res.end();
+    } else if (req.url.includes("/hostname")) {
+      res.write(os.hostname());
+      res.end();
+    } else {
       res.end();
     }
   });

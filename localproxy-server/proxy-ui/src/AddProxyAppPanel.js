@@ -19,12 +19,12 @@ const AddProxyAppPanel = ({ name, route, priority, refresh, close }) => {
             static: false,
             route: route || "/default/route",
             priority: parseInt(priority) || 0,
-            hostname: hostname || "localhost",
+            hostname: hostname || "127.0.0.1",
             port: port || 80,
-            trimRoute
-          }
-        ]
-      })
+            trimRoute,
+          },
+        ],
+      }),
     });
     close();
     refresh();
@@ -36,7 +36,7 @@ const AddProxyAppPanel = ({ name, route, priority, refresh, close }) => {
         title="Hostname"
         value={hostname}
         onChange={setHostname}
-        placeholder="localhost"
+        placeholder="127.0.0.1"
       />
       <Input title="Port" value={port} onChange={setPort} placeholder={80} />
       <Input
