@@ -8,6 +8,7 @@ function ReactApp() {
   const { data: hostname } = useApi({
     api: "/__proxy__/api/hostname",
     json: false,
+    cache: true
   });
   const [showSystem, setShowSystem] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
