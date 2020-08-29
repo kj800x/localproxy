@@ -50,7 +50,7 @@ function processRoutesJson(routesJson, reactScriptsPort) {
   };
 }
 
-async function main() {
+async function runStart() {
   const port = await localproxy.getAvailablePort();
 
   const localproxyApp = processRoutesJson(
@@ -69,6 +69,58 @@ async function main() {
     stdio: "inherit",
     reject: false,
   });
+}
+
+async function runBuild() {
+  await execa("sed", ["-i", "s/##homepage/homepage/g", "package.json"]);
+
+  try {
+    await runDirect("build");
+  } catch (e) {
+    console.error("react-scripts build had unexpected error", e);
+  } finally {
+    await execa("sed", ["-i", "s/homepage/##homepage/g", "package.json"]);
+  }
+}
+
+async function runEject() {
+  await execa("sed", [
+    "-i",
+    "s/localproxy-react-scripts/react-scripts/g",
+    "package.json",
+  ]);
+
+  try {
+    await runDirect("eject");
+  } catch (e) {
+    console.error("react-scripts eject had unexpected error", e);
+  }
+}
+
+async function runDirect(command) {
+  await execa(reactScriptsBin, [command], {
+    stdio: "inherit",
+    reject: false,
+  });
+}
+
+async function main() {
+  const command = process.argv[2];
+  switch (command) {
+    case "start":
+      return await runStart();
+    case "build":
+      return await runBuild();
+    case "eject":
+      return await runEject();
+    case "test":
+      return await runDirect("test");
+    default:
+      console.error(
+        `localproxy-react-scripts ${command}: unrecognized command`
+      );
+      return await runDirect(command);
+  }
 }
 
 main().catch(console.error);
