@@ -5,22 +5,8 @@ const WebSocket = require("ws");
 const os = require("os");
 
 const store = require("./store");
-
-const getBody = (req) =>
-  new Promise((acc, rej) => {
-    body = [];
-    req
-      .on("error", (err) => {
-        rej(err);
-      })
-      .on("data", (chunk) => {
-        body.push(chunk);
-      })
-      .on("end", () => {
-        body = Buffer.concat(body).toString();
-        acc(body);
-      });
-  });
+const { trust, getCert, addHost } = require("./ssl");
+const { getBody } = require("./util");
 
 store.startup().then(() => {
   const server = http.createServer().listen(0, "127.0.0.1");
@@ -70,24 +56,44 @@ store.startup().then(() => {
   });
 
   server.on("request", async (req, res) => {
-    if (req.url === "/") {
-      if (req.method === "GET") {
-        res.write(JSON.stringify(store.getApps()));
-      } else if (req.method === "POST") {
+    try {
+      if (req.url === "/") {
+        if (req.method === "GET") {
+          res.write(JSON.stringify(store.getApps()));
+        } else if (req.method === "POST") {
+          const body = await getBody(req);
+          const payload = JSON.parse(body);
+          store.register(payload);
+        } else if (req.method === "DELETE") {
+          const body = await getBody(req);
+          const payload = JSON.parse(body);
+          store.deRegister(payload.id);
+        }
+        res.end();
+      } else if (req.url.includes("/hostname")) {
+        res.write(os.hostname());
+        res.end();
+      } else if (req.url.includes("/ssl/trust")) {
         const body = await getBody(req);
         const payload = JSON.parse(body);
-        store.register(payload);
-      } else if (req.method === "DELETE") {
+        await trust(payload.server);
+        res.write("OK");
+        res.end();
+      } else if (req.url.includes("/ssl/add-host")) {
         const body = await getBody(req);
         const payload = JSON.parse(body);
-        store.deRegister(payload.id);
+        await addHost(payload.hostname);
+        res.write("OK");
+        res.end();
+      } else if (req.url.includes("/ssl/cert")) {
+        res.write(await getCert());
+        res.end();
+      } else {
+        res.write("Unhandled Request");
+        res.end();
       }
-      res.end();
-    } else if (req.url.includes("/hostname")) {
-      res.write(os.hostname());
-      res.end();
-    } else {
-      res.end();
+    } catch (e) {
+      console.error(e);
     }
   });
 });

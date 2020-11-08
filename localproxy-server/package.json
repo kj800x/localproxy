@@ -15,6 +15,8 @@
   },
   "license": "MIT",
   "dependencies": {
+    "execa": "^4.1.0",
+    "mkdirp": "^1.0.4",
     "nginxbeautifier": "^1.0.18",
     "ps-node": "^0.1.6",
     "rimraf": "^3.0.0",

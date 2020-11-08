@@ -1,10 +1,28 @@
 #!/bin/bash
 
-export VERSION="0.0.9"
+export VERSION="${VERSION:=0.0.9}"
+export ARCH="${ARCH:=amd64}"
+# export ARCH="armhf"
+# export ARCH="arm64"
 
 if [ "$EUID" -ne 0 ]
   then echo "Please run as root"
   exit
+fi
+
+if [ "$ARCH" = "amd64" ]
+  then export N_ARCH="x64"
+  export MKCERT_ARCH="amd64"
+fi
+
+if [ "$ARCH" = "armhf" ]
+  then export N_ARCH="armv7l"
+  export MKCERT_ARCH="arm"
+fi
+
+if [ "$ARCH" = "arm64" ]
+  then export N_ARCH="arm64"
+  export MKCERT_ARCH="arm64"
 fi
 
 # Nuke the last run if it still exists
@@ -18,19 +36,24 @@ npm run build
 cd ..
 
 # Set up the structure for the deb file
-mkdir -p build/localproxy_$VERSION
-cd build/localproxy_$VERSION
+mkdir -p build/localproxy_${VERSION}_${ARCH}
+cd build/localproxy_${VERSION}_${ARCH}
 
 # Fetch nodejs binary
 npm install -g n
-n 12.3.1
+N_PREFIX=./n-tmp n --arch ${N_ARCH} 12.3.1
 
-# Copy localproxy nodejs code, built site, and a nodejs runtime
+# Copy localproxy nodejs code, built site, mkcert, and a nodejs runtime
 mkdir -p usr/local/share/localproxy/proxy-ui
 cp -r ../../*js usr/local/share/localproxy
 cp -r ../../node_modules usr/local/share/localproxy
 cp -r ../../proxy-ui/build usr/local/share/localproxy/proxy-ui
-cp `n which 12.3.1` usr/local/share/localproxy/node
+cp `N_PREFIX=./n-tmp n which 12.3.1` usr/local/share/localproxy/node
+wget https://github.com/FiloSottile/mkcert/releases/download/v1.4.2/mkcert-v1.4.2-linux-${MKCERT_ARCH} -O usr/local/share/localproxy/mkcert
+chmod +x usr/local/share/localproxy/mkcert
+
+# Clear n-tmp directory
+rm -rf ./n-tmp
 
 # Set up reload-nginx
 mkdir -p usr/bin
@@ -41,10 +64,20 @@ $HERE
 chmod +x usr/bin/reload-nginx
 chmod 755 usr/bin/reload-nginx
 
-## Install the sudoers exception for reload-nginx
+# Set up mkcert-install
+mkdir -p usr/bin
+cat - > usr/bin/mkcert-install <<$HERE
+#!/bin/bash
+/usr/local/share/localproxy/mkcert -install
+$HERE
+chmod +x usr/bin/mkcert-install
+chmod 755 usr/bin/mkcert-install
+
+## Install the sudoers exception for reload-nginx and mkcert-install
 mkdir -p etc/sudoers.d
 cat - > etc/sudoers.d/localproxy <<$HERE
 ALL ALL = NOPASSWD: /usr/bin/reload-nginx
+ALL ALL = NOPASSWD:SETENV: /usr/bin/mkcert-install
 $HERE
 chmod 440 etc/sudoers.d/localproxy
 
@@ -73,11 +106,11 @@ $HERE
 mkdir DEBIAN
 cat - > DEBIAN/control << HERE
 Package: localproxy
-Version: $VERSION
+Version: ${VERSION}
 Section: base
 Priority: optional
-Architecture: all
-Depends: nginx (>= 1.14.0)
+Architecture: ${ARCH}
+Depends: nginx (>= 1.14.0), libnss3-tools
 Maintainer: Kevin Johnson <kevin@kj800x.com>
 Description: localproxy
  Dynamically run multiple web applications
@@ -87,14 +120,34 @@ HERE
 cat - > DEBIAN/postinst <<$HERE
 #!/bin/bash
 [ -f /etc/nginx/sites-enabled/default ] && mv /etc/nginx/sites-enabled/default /etc/nginx/.default-site_disabled_by_localproxy
+
 id -u localproxy &>/dev/null || adduser --quiet --system --no-create-home --home /usr/local/share/localproxy --shell /usr/sbin/nologin localproxy
 id -g localproxyusers &>/dev/null || addgroup --quiet --system localproxyusers
+
 mkdir -p /etc/localproxy
+
+if [[ ! -f /etc/localproxy-hosts ]]; then
+  echo "localhost" >> /etc/localproxy-hosts
+  echo "127.0.0.1" >> /etc/localproxy-hosts
+  echo "::1" >> /etc/localproxy-hosts
+fi
+
+mkdir -p /usr/local/share/localproxy/ca-root
+
+CAROOT=/usr/local/share/localproxy/ca-root /usr/local/share/localproxy/mkcert -install
+CAROOT=/usr/local/share/localproxy/ca-root /usr/local/share/localproxy/mkcert -cert-file /usr/local/share/localproxy/localproxy.pem -key-file /usr/local/share/localproxy/localproxy-key.pem $(tr '\012' ' ' < /etc/localproxy-hosts)
+
+chown localproxy /usr/local/share/localproxy/ca-root/rootCA-key.pem
+chown localproxy /usr/local/share/localproxy/ca-root/rootCA.pem
+chown localproxy /usr/local/share/localproxy/localproxy-key.pem
+chown localproxy /usr/local/share/localproxy/localproxy.pem
 chown localproxy /etc/nginx/conf.d/localproxy.conf
 chown localproxy /etc/localproxy
+chown localproxy /etc/localproxy-hosts
 chgrp localproxyusers /etc/localproxy
 chmod g+s /etc/localproxy
 chmod 775 /etc/localproxy
+
 systemctl daemon-reload
 systemctl start localproxy.service
 systemctl enable localproxy.service
@@ -105,6 +158,10 @@ chmod +x DEBIAN/postinst
 cat - > DEBIAN/postrm <<$HERE
 #!/bin/bash
 [ -f /etc/nginx/.default-site_disabled_by_localproxy ] && mv /etc/nginx/.default-site_disabled_by_localproxy /etc/nginx/sites-enabled/default
+
+CAROOT=/usr/local/share/localproxy/ca-root /usr/local/share/localproxy/mkcert -uninstall
+rm -rf /usr/local/share/localproxy/ca-root /usr/local/share/localproxy/localproxy.pem /usr/local/share/localproxy/localproxy-key.pem
+
 systemctl disable localproxy.service
 systemctl restart nginx.service
 systemctl daemon-reload
@@ -113,5 +170,5 @@ chmod +x DEBIAN/postrm
 
 # Build the deb file
 cd ..
-chown -R root localproxy_$VERSION
-dpkg-deb --build localproxy_$VERSION
+chown -R root localproxy_${VERSION}_${ARCH}
+dpkg-deb --build localproxy_${VERSION}_${ARCH}

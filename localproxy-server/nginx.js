@@ -83,8 +83,11 @@ const template = (routes) =>
   server {
     access_log /var/log/nginx/scripts.log scripts;
 
-    listen 80 default_server;
-    listen [::]:80 default_server;
+    listen 80;
+    listen [::]:80;
+    listen 443 ssl http2;
+    ssl_certificate /usr/local/share/localproxy/localproxy.pem;
+    ssl_certificate_key /usr/local/share/localproxy/localproxy-key.pem;
 
     index index.html;
 
@@ -144,4 +147,5 @@ function sync(apps) {
 
 module.exports = {
   sync,
+  reload,
 };
