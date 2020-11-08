@@ -6,10 +6,10 @@ const Input = ({
   placeholder,
   onChange,
   checked,
-  type = "text"
+  type = "text",
 }) => {
   return (
-    <div className="form-input">
+    <>
       <label>{title}</label>
       <input
         type={type}
@@ -20,7 +20,7 @@ const Input = ({
           onChange(type === "checkbox" ? checked : value)
         }
       />
-    </div>
+    </>
   );
 };
 

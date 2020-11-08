@@ -12,7 +12,9 @@ function readCache(key, value) {
 }
 
 const useApi = ({ api, deps = [], json = true, cache = false }) => {
-  const [loading, setLoading] = useState(cache && readCache(api) !== null ? false : true);
+  const [loading, setLoading] = useState(
+    cache && readCache(api) !== null ? false : true
+  );
   const [error, setError] = useState(null);
   const [data, setData] = useState(cache ? readCache(api) : null);
 
@@ -29,7 +31,7 @@ const useApi = ({ api, deps = [], json = true, cache = false }) => {
       } catch (e) {
         setError(e);
         if (cache) {
-          setCache(api, null)
+          setCache(api, null);
         }
         setLoading(false);
       }

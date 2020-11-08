@@ -30,7 +30,7 @@ const AddStaticAppPanel = ({ name, route, priority, close }) => {
   };
 
   return (
-    <div>
+    <div className="add-grid">
       <Input
         title="Static Directory"
         value={staticDir}

@@ -4,6 +4,7 @@ import UIModal from "./UIModal";
 import Input from "./Input";
 import AddStaticAppPanel from "./AddStaticAppPanel";
 import AddProxyAppPanel from "./AddProxyAppPanel";
+import "./AddModal.css";
 
 const AddModal = ({ close }) => {
   const [name, setName] = useState("");
@@ -12,25 +13,27 @@ const AddModal = ({ close }) => {
 
   return (
     <UIModal close={close} title="Add App">
-      <Input
-        title="Name"
-        value={name}
-        onChange={setName}
-        placeholder={"An App Name"}
-      />
-      <Input
-        title="Route"
-        value={route}
-        onChange={setRoute}
-        placeholder={"/a/route"}
-      />
-      <Input
-        title="Priority"
-        type="number"
-        value={priority}
-        onChange={setPriority}
-        placeholder={"0"}
-      />
+      <div className="add-grid">
+        <Input
+          title="Name"
+          value={name}
+          onChange={setName}
+          placeholder={"An App Name"}
+        />
+        <Input
+          title="Route"
+          value={route}
+          onChange={setRoute}
+          placeholder={"/a/route"}
+        />
+        <Input
+          title="Priority"
+          type="number"
+          value={priority}
+          onChange={setPriority}
+          placeholder={"0"}
+        />
+      </div>
       <Tabs>
         <TabList>
           <Tab>Static</Tab>

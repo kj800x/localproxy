@@ -4,7 +4,7 @@ const rimraf = require("rimraf");
 const ps = require("ps-node");
 const nginx = require("./nginx");
 
-const WATCH_DIR = "/etc/localproxy";
+const WATCH_DIR = "/etc/localproxy/sites";
 
 let apps = {};
 let onSyncHandler = () => {};

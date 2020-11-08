@@ -5,7 +5,7 @@ const WebSocket = require("ws");
 const os = require("os");
 
 const store = require("./store");
-const { trust, getCert, addHost } = require("./ssl");
+const { trust, getCert, addHost, listTrust, listHosts } = require("./ssl");
 const { getBody } = require("./util");
 
 store.startup().then(() => {
@@ -70,14 +70,17 @@ store.startup().then(() => {
           store.deRegister(payload.id);
         }
         res.end();
-      } else if (req.url.includes("/hostname")) {
-        res.write(os.hostname());
+      } else if (req.url.includes("/ssl/trust/list")) {
+        res.write(JSON.stringify(await listTrust()));
         res.end();
       } else if (req.url.includes("/ssl/trust")) {
         const body = await getBody(req);
         const payload = JSON.parse(body);
         await trust(payload.hostname);
         res.write("OK");
+        res.end();
+      } else if (req.url.includes("/ssl/hostnames/list")) {
+        res.write(JSON.stringify(await listHosts()));
         res.end();
       } else if (req.url.includes("/ssl/add-hostname")) {
         const body = await getBody(req);
@@ -87,6 +90,9 @@ store.startup().then(() => {
         res.end();
       } else if (req.url.includes("/ssl/cert")) {
         res.write(await getCert());
+        res.end();
+      } else if (req.url.includes("/hostname")) {
+        res.write(os.hostname());
         res.end();
       } else {
         res.write("Unhandled Request");

@@ -30,7 +30,7 @@ const AddProxyAppPanel = ({ name, route, priority, close }) => {
   };
 
   return (
-    <div>
+    <div className="add-grid">
       <Input
         title="Hostname"
         value={hostname}

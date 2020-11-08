@@ -86,8 +86,8 @@ const template = (routes) =>
     listen 80;
     listen [::]:80;
     listen 443 ssl http2;
-    ssl_certificate /usr/local/share/localproxy/localproxy.pem;
-    ssl_certificate_key /usr/local/share/localproxy/localproxy-key.pem;
+    ssl_certificate /etc/localproxy/localproxy.pem;
+    ssl_certificate_key /etc/localproxy/localproxy-key.pem;
 
     index index.html;
 

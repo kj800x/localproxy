@@ -2,21 +2,29 @@
   display: grid;
   grid-template-columns: 1fr 3fr 100px;
   column-gap: 10px;
-  row-gap: 10px;
+  row-gap: 20px;
 }
 
 .ssl-settings button {
   justify-self: end;
 }
 
-.ssl-settings .result {
+.ssl-settings .result,
+.ssl-settings .status {
   grid-column-start: 1;
   grid-column-end: 4;
   text-align: center;
   margin-top: -8px;
-  color: #00a38d;
 }
 
+.ssl-settings .result {
+  color: #00a38d;
+}
 .ssl-settings .result.error {
   color: #d94c71;
+}
+
+.ssl-settings .download-title {
+  grid-column-start: 1;
+  grid-column-end: 3;
 }

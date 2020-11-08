@@ -1,9 +1,7 @@
 #!/bin/bash
 
-export VERSION="${VERSION:=0.1.2}"
+export VERSION="${VERSION:=0.2.0}"
 export ARCH="${ARCH:=amd64}"
-# export ARCH="armhf"
-# export ARCH="arm64"
 
 if [ "$EUID" -ne 0 ]
   then echo "Please run as root"
@@ -113,57 +111,55 @@ Architecture: ${ARCH}
 Depends: nginx (>= 1.14.0), libnss3-tools
 Maintainer: Kevin Johnson <kevin@kj800x.com>
 Description: localproxy
- Dynamically run multiple web applications
- on routes on http://localhost:80.
+ Automatic nginx configuration for 
+ dynamically run web applications.
 HERE
 
-cat - > DEBIAN/postinst <<$HERE
+cat - > DEBIAN/postinst <<'HERE'
 #!/bin/bash
-[ -f /etc/nginx/sites-enabled/default ] && mv /etc/nginx/sites-enabled/default /etc/nginx/.default-site_disabled_by_localproxy
-
 id -u localproxy &>/dev/null || adduser --quiet --system --no-create-home --home /usr/local/share/localproxy --shell /usr/sbin/nologin localproxy
 id -g localproxyusers &>/dev/null || addgroup --quiet --system localproxyusers
 
-mkdir -p /etc/localproxy
-
-if [[ ! -f /etc/localproxy-hosts ]]; then
-  echo "localhost" >> /etc/localproxy-hosts
-  echo "127.0.0.1" >> /etc/localproxy-hosts
-  echo "::1" >> /etc/localproxy-hosts
+if [[ -f /etc/nginx/sites-enabled/default ]]; then
+  mv /etc/nginx/sites-enabled/default /etc/nginx/.default-site_disabled_by_localproxy
 fi
 
-mkdir -p /usr/local/share/localproxy/ca-root
-touch /usr/local/share/localproxy/localproxy.pem
-touch /usr/local/share/localproxy/localproxy-key.pem
-chown localproxy /usr/local/share/localproxy/localproxy.pem /usr/local/share/localproxy/localproxy-key.pem
+mkdir -p /etc/localproxy/sites/
 
-CAROOT=/usr/local/share/localproxy/ca-root /usr/local/share/localproxy/mkcert -install
-CAROOT=/usr/local/share/localproxy/ca-root /usr/local/share/localproxy/mkcert -cert-file /usr/local/share/localproxy/localproxy.pem -key-file /usr/local/share/localproxy/localproxy-key.pem $(tr '\012' ' ' < /etc/localproxy-hosts)
+if [[ ! -f /etc/localproxy/hosts ]]; then
+  echo "localhost" >> /etc/localproxy/hosts
+  echo "127.0.0.1" >> /etc/localproxy/hosts
+  echo "::1" >> /etc/localproxy/hosts
+  chown localproxy /etc/localproxy/hosts
+fi
 
-chown localproxy /usr/local/share/localproxy/ca-root/rootCA-key.pem
-chown localproxy /usr/local/share/localproxy/ca-root/rootCA.pem
-chown localproxy /usr/local/share/localproxy/localproxy-key.pem
-chown localproxy /usr/local/share/localproxy/localproxy.pem
+if [[ ! -f /etc/localproxy/localproxy.pem ]]; then
+  mkdir -p /etc/localproxy/ca-root
+  CAROOT=/etc/localproxy/ca-root /usr/local/share/localproxy/mkcert -install
+
+  CAROOT=/etc/localproxy/ca-root /usr/local/share/localproxy/mkcert -cert-file /etc/localproxy/localproxy.pem -key-file /etc/localproxy/localproxy-key.pem $(tr '\012' ' ' < /etc/localproxy/hosts)
+  chown localproxy /etc/localproxy/ca-root/rootCA.pem /etc/localproxy/ca-root/rootCA-key.pem
+  chown localproxy /etc/localproxy/localproxy.pem /etc/localproxy/localproxy-key.pem
+fi
+
 chown localproxy /etc/nginx/conf.d/localproxy.conf
 chown localproxy /etc/localproxy
-chown localproxy /etc/localproxy-hosts
-chgrp localproxyusers /etc/localproxy
-chmod g+s /etc/localproxy
-chmod 775 /etc/localproxy
+
+chown localproxy /etc/localproxy/sites
+chgrp localproxyusers /etc/localproxy/sites
+chmod g+s /etc/localproxy/sites
+chmod 775 /etc/localproxy/sites
 
 systemctl daemon-reload
 systemctl start localproxy.service
 systemctl enable localproxy.service
 systemctl restart localproxy.service
-$HERE
+HERE
 chmod +x DEBIAN/postinst
 
 cat - > DEBIAN/postrm <<$HERE
 #!/bin/bash
 [ -f /etc/nginx/.default-site_disabled_by_localproxy ] && mv /etc/nginx/.default-site_disabled_by_localproxy /etc/nginx/sites-enabled/default
-
-CAROOT=/usr/local/share/localproxy/ca-root /usr/local/share/localproxy/mkcert -uninstall
-rm -rf /usr/local/share/localproxy/ca-root /usr/local/share/localproxy/localproxy.pem /usr/local/share/localproxy/localproxy-key.pem
 
 systemctl disable localproxy.service
 systemctl restart nginx.service
