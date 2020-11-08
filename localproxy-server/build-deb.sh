@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export VERSION="${VERSION:=0.1.1}"
+export VERSION="${VERSION:=0.1.2}"
 export ARCH="${ARCH:=amd64}"
 # export ARCH="armhf"
 # export ARCH="arm64"
