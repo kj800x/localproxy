@@ -4,6 +4,13 @@ import App from "./App";
 import AddModal from "./AddModal";
 import useApi from "./useApi";
 
+function constructWebsocketUrl(path) {
+  const url = new URL(window.location);
+  return `${url.protocol === "https:" ? "wss" : "ws"}://${
+    window.location.host
+  }${window.location.port ? `:${window.location.port}` : ""}/${path}`;
+}
+
 function Apps({ showSystem, showAddModal, closeModal }) {
   const [refresh, setRefresh] = useState(0);
   const doRefresh = () => setRefresh(refresh + 1);
@@ -14,7 +21,7 @@ function Apps({ showSystem, showAddModal, closeModal }) {
   });
 
   useEffect(() => {
-    const socket = new WebSocket(`ws://${window.location.host}/__proxy__/api`);
+    const socket = new WebSocket(constructWebsocketUrl("__proxy__/api"));
     socket.onmessage = (message) => {
       setApps(JSON.parse(message.data));
     };
