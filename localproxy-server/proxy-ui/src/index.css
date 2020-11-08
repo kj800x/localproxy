@@ -32,13 +32,13 @@ header .icon {
   font-size: 2em;
 }
 
-.apps {
+.content {
   max-width: 750px;
   margin: 0 auto;
   padding: 4px;
 }
 
-.apps > .app {
+.content > .app {
   border: 3px solid #5e6ab8;
   border-radius: 6px;
   margin: 12px 0;
@@ -46,7 +46,7 @@ header .icon {
   background: #f0f1fa;
 }
 
-.apps > .app > h2 {
+.content > .app > h2 {
   padding-bottom: 2px;
   border-bottom: 1px solid #516f90;
   margin-bottom: 12px;
@@ -54,11 +54,11 @@ header .icon {
   justify-content: space-between;
 }
 
-.apps > .app > h2 > .icon {
+.content > .app > h2 > .icon {
   flex-shrink: 0;
 }
 
-.apps > .app > h2 > a {
+.content > .app > h2 > a {
   color: #6a78d1;
 }
 
@@ -107,30 +107,12 @@ a {
   font-size: xx-large;
 }
 
-.modal-container {
-  pointer-events: none;
-}
-
-.modal-cover,
-.modal-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-}
-
-.modal-cover {
-  background: rgba(0, 0, 0, 0.6);
-}
-
 .modal {
-  pointer-events: auto;
-  background: white;
-  width: 750px;
-  margin: 62px auto 0;
-  border-radius: 10px;
-  padding: 10px;
+  border: 3px dashed #5e6ab8;
+  border-radius: 6px;
+  margin: 12px 0;
+  padding: 8px;
+  background: #f0f1fa;
 }
 
 .modal > h3 {
@@ -144,7 +126,7 @@ a {
   background-color: #2d3e50 !important;
 }
 
-.apps > .loader {
+.content > .loader {
   margin: 20px auto;
   width: 58px;
   height: 58px;

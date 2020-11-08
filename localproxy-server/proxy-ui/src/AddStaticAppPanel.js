@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 import Input from "./Input";
 
-const AddStaticAppPanel = ({ name, route, priority, refresh, close }) => {
+const AddStaticAppPanel = ({ name, route, priority, close }) => {
   const [staticDir, setStaticDir] = useState("");
   const [indexFallback, setIndexFallback] = useState(false);
   const [autoIndex, setAutoIndex] = useState(false);
@@ -21,13 +21,12 @@ const AddStaticAppPanel = ({ name, route, priority, refresh, close }) => {
             priority: parseInt(priority) || 0,
             staticDir: staticDir || "/default/static/dir/",
             indexFallback,
-            autoIndex
-          }
-        ]
-      })
+            autoIndex,
+          },
+        ],
+      }),
     });
     close();
-    refresh();
   };
 
   return (

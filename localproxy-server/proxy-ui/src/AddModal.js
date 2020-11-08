@@ -5,13 +5,13 @@ import Input from "./Input";
 import AddStaticAppPanel from "./AddStaticAppPanel";
 import AddProxyAppPanel from "./AddProxyAppPanel";
 
-const AddModal = ({ close, refresh }) => {
+const AddModal = ({ close }) => {
   const [name, setName] = useState("");
   const [route, setRoute] = useState("");
   const [priority, setPriority] = useState("0");
 
   return (
-    <UIModal close={close} title="Manually Add App">
+    <UIModal close={close} title="Add App">
       <Input
         title="Name"
         value={name}
@@ -41,7 +41,6 @@ const AddModal = ({ close, refresh }) => {
             name={name}
             route={route}
             priority={priority}
-            refresh={refresh}
             close={close}
           />
         </TabPanel>
@@ -50,7 +49,6 @@ const AddModal = ({ close, refresh }) => {
             name={name}
             route={route}
             priority={priority}
-            refresh={refresh}
             close={close}
           />
         </TabPanel>

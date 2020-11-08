@@ -1,23 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Loader from "react-loaders";
 import App from "./App";
-import AddModal from "./AddModal";
 import useApi from "./useApi";
 
 function constructWebsocketUrl(path) {
   const url = new URL(window.location);
-  return `${url.protocol === "https:" ? "wss" : "ws"}://${
-    window.location.host
-  }${window.location.port ? `:${window.location.port}` : ""}/${path}`;
+  return `${url.protocol === "https:" ? "wss" : "ws"}://${url.hostname}${
+    url.port ? `:${url.port}` : ""
+  }/${path}`;
 }
 
-function Apps({ showSystem, showAddModal, closeModal }) {
-  const [refresh, setRefresh] = useState(0);
-  const doRefresh = () => setRefresh(refresh + 1);
-
+function Apps({ showSystem }) {
   const { data: apps, error, loading, setData: setApps } = useApi({
     api: "/__proxy__/api",
-    deps: [refresh],
+    deps: [],
   });
 
   useEffect(() => {
@@ -28,20 +24,14 @@ function Apps({ showSystem, showAddModal, closeModal }) {
   }, [setApps]);
 
   if (loading) {
-    return (
-      <div className="apps">
-        <Loader type="ball-grid-pulse" />
-      </div>
-    );
+    return <Loader type="ball-grid-pulse" />;
   }
 
   if (error) {
     return (
-      <div className="apps">
-        <span className="noRoutes">
-          Failed to connect... Is the localproxy server running?
-        </span>
-      </div>
+      <span className="noRoutes">
+        Failed to connect... Is the localproxy server running?
+      </span>
     );
   }
 
@@ -51,17 +41,10 @@ function Apps({ showSystem, showAddModal, closeModal }) {
     filteredApps.length === 0 ? (
       <span className="noRoutes">No Routes, Just Right</span>
     ) : (
-      filteredApps.map((app) => (
-        <App key={app.id} app={app} refresh={doRefresh} />
-      ))
+      filteredApps.map((app) => <App key={app.id} app={app} />)
     );
 
-  return (
-    <div className="apps">
-      {renderedApps}
-      {showAddModal && <AddModal close={closeModal} refresh={doRefresh} />}
-    </div>
-  );
+  return <>{renderedApps}</>;
 }
 
 export default Apps;

@@ -76,10 +76,10 @@ store.startup().then(() => {
       } else if (req.url.includes("/ssl/trust")) {
         const body = await getBody(req);
         const payload = JSON.parse(body);
-        await trust(payload.server);
+        await trust(payload.hostname);
         res.write("OK");
         res.end();
-      } else if (req.url.includes("/ssl/add-host")) {
+      } else if (req.url.includes("/ssl/add-hostname")) {
         const body = await getBody(req);
         const payload = JSON.parse(body);
         await addHost(payload.hostname);

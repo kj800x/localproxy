@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 import Input from "./Input";
 
-const AddProxyAppPanel = ({ name, route, priority, refresh, close }) => {
+const AddProxyAppPanel = ({ name, route, priority, close }) => {
   const [hostname, setHostname] = useState("");
   const [port, setPort] = useState("");
   const [trimRoute, setTrimRoute] = useState(false);
@@ -27,7 +27,6 @@ const AddProxyAppPanel = ({ name, route, priority, refresh, close }) => {
       }),
     });
     close();
-    refresh();
   };
 
   return (
