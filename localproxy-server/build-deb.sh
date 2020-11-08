@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export VERSION="${VERSION:=0.1.0}"
+export VERSION="${VERSION:=0.1.1}"
 export ARCH="${ARCH:=amd64}"
 # export ARCH="armhf"
 # export ARCH="arm64"
@@ -133,6 +133,9 @@ if [[ ! -f /etc/localproxy-hosts ]]; then
 fi
 
 mkdir -p /usr/local/share/localproxy/ca-root
+touch /usr/local/share/localproxy/localproxy.pem
+touch /usr/local/share/localproxy/localproxy-key.pem
+chown localproxy /usr/local/share/localproxy/localproxy.pem /usr/local/share/localproxy/localproxy-key.pem
 
 CAROOT=/usr/local/share/localproxy/ca-root /usr/local/share/localproxy/mkcert -install
 CAROOT=/usr/local/share/localproxy/ca-root /usr/local/share/localproxy/mkcert -cert-file /usr/local/share/localproxy/localproxy.pem -key-file /usr/local/share/localproxy/localproxy-key.pem $(tr '\012' ' ' < /etc/localproxy-hosts)
