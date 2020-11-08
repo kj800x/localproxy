@@ -130,6 +130,8 @@ if [[ ! -f /etc/localproxy/hosts ]]; then
   echo "localhost" >> /etc/localproxy/hosts
   echo "127.0.0.1" >> /etc/localproxy/hosts
   echo "::1" >> /etc/localproxy/hosts
+  hostname >> /etc/localproxy/hosts
+  hostname -I | tr ' ' '\012' | awk 'NF' - >> /etc/localproxy/hosts
   chown localproxy /etc/localproxy/hosts
 fi
 

@@ -31,6 +31,7 @@ const Trust = () => {
   const [trustResult, setTrustResult] = useState("");
   const trust = useCallback(async () => {
     try {
+      setTrustResult("");
       await fetch("/__proxy__/api/ssl/trust", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -81,6 +82,7 @@ const Hostnames = () => {
   const [addHostnameResult, setAddHostnameResult] = useState("");
   const addHostname = useCallback(async () => {
     try {
+      setAddHostnameResult("");
       await fetch("/__proxy__/api/ssl/add-hostname", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
