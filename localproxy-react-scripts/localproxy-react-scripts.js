@@ -11,6 +11,7 @@ const CWD = process.cwd();
 const DEFAULT_ROUTES_JSON = {
   id: CWD,
   name: path.basename(CWD),
+  pid: process.pid,
   routes: [],
 };
 
@@ -30,6 +31,7 @@ function processRoutesJson(routesJson, reactScriptsPort) {
   return {
     id: routesJson.id || routesJson.name || CWD,
     name: routesJson.name || path.basename(CWD),
+    pid: process.pid,
     routes: [
       {
         static: false,

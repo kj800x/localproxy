@@ -18,17 +18,19 @@ function App({ app }) {
       <h2>
         <a href={app.routes[0].route}>{app.name}</a>
         {app.pid && app.pid > -1 && <Tag color="norman">PID: {app.pid}</Tag>}
-        {!app.system && (
-          <UIIcon
-            color="#d94c53"
-            iconColor="#2d3e50"
-            Icon={FaTrash}
-            onClick={deleteApp}
-          />
-        )}
-        {app.system && (
-          <UIIcon iconColor="#2d3e50" color="#00a38d" Icon={FaTools} />
-        )}
+        <div className="app-icon">
+          {!app.system && (
+            <UIIcon
+              color="#d94c53"
+              iconColor="#2d3e50"
+              Icon={FaTrash}
+              onClick={deleteApp}
+            />
+          )}
+          {app.system && (
+            <UIIcon iconColor="#2d3e50" color="#00a38d" Icon={FaTools} />
+          )}
+        </div>
       </h2>
       <div className="routes">
         {app.routes.map((route) => (

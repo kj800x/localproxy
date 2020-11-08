@@ -39,13 +39,13 @@ const AddStaticAppPanel = ({ name, route, priority, close }) => {
       />
       <Input
         type="checkbox"
-        title="Index Fallback"
+        title="index.html Fallback"
         value={indexFallback}
         onChange={setIndexFallback}
       />
       <Input
         type="checkbox"
-        title="Auto Index"
+        title="Directory Listings"
         value={autoIndex}
         onChange={setAutoIndex}
       />

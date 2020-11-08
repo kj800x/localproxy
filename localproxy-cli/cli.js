@@ -64,6 +64,7 @@ function processRoutesJson(routesJson, args) {
   return {
     id: args.id || routesJson.id || routesJson.name || CWD,
     name: args.name || routesJson.name || path.basename(CWD),
+    pid: process.pid,
     routes: routesJson.routes.map((route) => ({
       ...route,
       priority: args.priority
@@ -80,6 +81,7 @@ function buildServeCwdApp(args) {
   return {
     id: args.id || CWD,
     name: args.name || path.basename(CWD),
+    pid: process.pid,
     routes: [
       {
         static: true,

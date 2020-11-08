@@ -60,6 +60,13 @@ header .icon {
 
 .content > .app > h2 > a {
   color: #6a78d1;
+  margin-right: 4px;
+}
+
+.content > .app > h2 > .app-icon {
+  display: flex;
+  flex: 1;
+  justify-content: flex-end;
 }
 
 .route {

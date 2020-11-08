@@ -11,8 +11,8 @@ function Route({ route }) {
       </div>
 
       <ul className="route-details">
-        {route.indexFallback && <li>Root Index Fallback</li>}
-        {route.autoIndex && <li>Auto Index</li>}
+        {route.indexFallback && <li>index.html Fallback</li>}
+        {route.autoIndex && <li>Directory Listings</li>}
         {route.trimRoute && <li>Trim Route</li>}
       </ul>
     </>
