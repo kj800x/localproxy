@@ -1,24 +1,30 @@
 const tmp = require("tmp");
 const fs = require("fs");
 const net = require("net");
+const path = require("path");
 
 tmp.setGracefulCleanup();
 
-const LOCALPROXY_CONFIG_DIR = "/etc/localproxy";
-const sanitize = s => s.replace(/[^a-z0-9]/gi, "_");
+const LOCALPROXY_CONFIG_DIR = "/etc/localproxy/sites";
+const sanitize = (s) => s.replace(/[^a-z0-9]/gi, "_");
 let tmpFileCleanups = {};
 
-const register = app =>
+const register = (app) =>
   new Promise((resolve, reject) => {
     const id = sanitize(app.id);
     const filename = `${id}.json`;
     const contents = JSON.stringify(app);
+    const fullPath = path.join(LOCALPROXY_CONFIG_DIR, filename);
+    if (fs.existsSync(fullPath)) {
+      console.warn("⚠️  We had to clean up an existing localproxy file!");
+      fs.unlinkSync(fullPath);
+    }
     tmp.file(
       {
         mode: 0644,
         discardDescriptor: true,
         dir: LOCALPROXY_CONFIG_DIR,
-        name: filename
+        name: filename,
       },
       (err, name, _fd, cleanup) => {
         if (err) {
@@ -28,7 +34,7 @@ const register = app =>
           reject(err);
           return;
         }
-        fs.writeFile(name, contents, err => {
+        fs.writeFile(name, contents, (err) => {
           if (err) {
             console.error(
               "Failed to write localproxy file, are you a member of localproxyusers?"
@@ -43,7 +49,7 @@ const register = app =>
     );
   });
 
-const deregister = app => {
+const deregister = (app) => {
   const id = sanitize(app.id);
   if (tmpFileCleanups[id]) {
     tmpFileCleanups[id]();
@@ -67,5 +73,5 @@ const getAvailablePort = () =>
 module.exports = {
   register,
   deregister,
-  getAvailablePort
+  getAvailablePort,
 };
