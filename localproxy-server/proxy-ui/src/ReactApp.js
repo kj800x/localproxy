@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { FaTools, FaPlus, FaLock } from "react-icons/fa";
-import Apps from "./Apps";
-import UIIcon from "./UIIcon";
-import useApi from "./useApi";
-import { SslSettings } from "./SslSettings";
-import AddModal from "./AddModal";
-import UIModal from "./UIModal";
+import Apps from "./app/Apps";
+import UIIcon from "./util/UIIcon";
+import useApi from "./util/useApi";
+import { SslSettings } from "./ssl/SslSettings";
+import AddModal from "./add/AddModal";
+import UIModal from "./util/UIModal";
 
 function ReactApp() {
   const { data: hostname } = useApi({

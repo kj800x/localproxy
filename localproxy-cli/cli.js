@@ -17,14 +17,11 @@ All options are for for serving the current directory:
                            [default: /]
   --id                   specify a specific localproxy id
   --name                 set the display name in the localproxy ui
-  --name                 set the priority
+  --priority             set the priority
                            [default: 0]
   --quiet                do not show the localproxy app configuration
-  --no-index-fallback    do not enable index fallback
-                           (serve index.html when the user
-                            navigates to a directory)
-  --no-auto-index        do not enable auto index
-                           (automatic directory listings)
+  --rif                  enable root index fallback (for single page apps)
+  --no-dir               disable directory listings
   --help, -h             show this help text`;
 
 function parseArgv() {
@@ -43,8 +40,8 @@ function parseArgv() {
     name: namedArg("--name"),
     priority: namedArg("--priority"),
     quiet: flag("--quiet"),
-    noIndexFallback: flag("--no-index-fallback"),
-    noAutoIndex: flag("--no-auto-index"),
+    rootIndexFallback: flag("--rif"),
+    noDirectoryListings: flag("--no-dir"),
   };
 }
 
@@ -88,8 +85,8 @@ function buildServeCwdApp(args) {
         route: args.route || "/",
         staticDir: CWD + "/",
         priority: args.priority ? parseInt(args.priority, 10) : 0,
-        indexFallback: !args.noIndexFallback,
-        autoIndex: !args.noAutoIndex,
+        rootIndexFallback: !args.rootIndexFallback,
+        dirListings: !args.noDirectoryListings,
       },
     ],
   };
@@ -98,7 +95,7 @@ function buildServeCwdApp(args) {
 function loadApp(args) {
   const routesJson = readRoutesJson();
   if (routesJson) {
-    console.log("🎉 Serving app based on routes.json");
+    console.log("🎉 Serving app using routes.json");
     return processRoutesJson(routesJson, args);
   } else {
     console.log("🎉 Serving cwd as static route");

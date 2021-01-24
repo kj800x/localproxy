@@ -44,6 +44,7 @@ const getApps = () => Object.values(apps);
 function register(payload) {
   const file = `${sanitize(payload.id)}.json`;
   fs.writeFileSync(path.join(WATCH_DIR, file), JSON.stringify(payload));
+  fs.chmodSync(path.join(WATCH_DIR, file), "0664");
   forceSync();
 }
 

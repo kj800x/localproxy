@@ -119,6 +119,7 @@ cat - > DEBIAN/postinst <<'HERE'
 #!/bin/bash
 id -u localproxy &>/dev/null || adduser --quiet --system --no-create-home --home /usr/local/share/localproxy --shell /usr/sbin/nologin localproxy
 id -g localproxyusers &>/dev/null || addgroup --quiet --system localproxyusers
+usermod -a -G localproxyusers localproxy
 
 if [[ -f /etc/nginx/sites-enabled/default ]]; then
   mv /etc/nginx/sites-enabled/default /etc/nginx/.default-site_disabled_by_localproxy

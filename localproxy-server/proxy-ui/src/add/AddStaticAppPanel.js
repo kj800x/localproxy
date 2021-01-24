@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 
-import Input from "./Input";
+import Input from "../util/Input";
+import { AddGridWrapper } from "./AddGridWrapper";
 
 const AddStaticAppPanel = ({ name, route, priority, close }) => {
   const [staticDir, setStaticDir] = useState("");
-  const [indexFallback, setIndexFallback] = useState(false);
-  const [autoIndex, setAutoIndex] = useState(false);
+  const [rootIndexFallback, setRootIndexFallback] = useState(false);
+  const [dirListings, setDirListings] = useState(false);
 
   const addApp = async () => {
     await fetch("/__proxy__/api", {
@@ -20,8 +21,8 @@ const AddStaticAppPanel = ({ name, route, priority, close }) => {
             route: route || "/default/route",
             priority: parseInt(priority) || 0,
             staticDir: staticDir || "/default/static/dir/",
-            indexFallback,
-            autoIndex,
+            rootIndexFallback,
+            dirListings,
           },
         ],
       }),
@@ -30,7 +31,7 @@ const AddStaticAppPanel = ({ name, route, priority, close }) => {
   };
 
   return (
-    <div className="add-grid">
+    <AddGridWrapper>
       <Input
         title="Static Directory"
         value={staticDir}
@@ -39,18 +40,18 @@ const AddStaticAppPanel = ({ name, route, priority, close }) => {
       />
       <Input
         type="checkbox"
-        title="index.html Fallback"
-        value={indexFallback}
-        onChange={setIndexFallback}
+        title="Root Index Fallback"
+        value={rootIndexFallback}
+        onChange={setRootIndexFallback}
       />
       <Input
         type="checkbox"
         title="Directory Listings"
-        value={autoIndex}
-        onChange={setAutoIndex}
+        value={dirListings}
+        onChange={setDirListings}
       />
       <button onClick={addApp}>Add App</button>
-    </div>
+    </AddGridWrapper>
   );
 };
 

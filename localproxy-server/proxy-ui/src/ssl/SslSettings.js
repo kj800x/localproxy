@@ -1,8 +1,38 @@
 import React, { useState, useCallback } from "react";
+import styled from "styled-components";
 import classNames from "classnames";
-import useApi from "./useApi";
+import useApi from "../util/useApi";
 
-import "./SslSettings.css";
+const SslSettingsWrapper = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 3fr 100px;
+  column-gap: 10px;
+  row-gap: 20px;
+
+  button {
+    justify-self: end;
+  }
+
+  .result,
+  .status {
+    grid-column-start: 1;
+    grid-column-end: 4;
+    text-align: center;
+    margin-top: -8px;
+  }
+
+  .result {
+    color: #00a38d;
+  }
+  .result.error {
+    color: #d94c71;
+  }
+
+  .download-title {
+    grid-column-start: 1;
+    grid-column-end: 3;
+  }
+`;
 
 function download(filename, text) {
   var element = document.createElement("a");
@@ -133,10 +163,10 @@ const Download = () => {
 
 export const SslSettings = () => {
   return (
-    <div className="ssl-settings">
+    <SslSettingsWrapper>
       <Trust />
       <Hostnames />
       <Download />
-    </div>
+    </SslSettingsWrapper>
   );
 };

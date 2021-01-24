@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 
-import Input from "./Input";
+import Input from "../util/Input";
+import { AddGridWrapper } from "./AddGridWrapper";
 
 const AddProxyAppPanel = ({ name, route, priority, close }) => {
   const [hostname, setHostname] = useState("");
@@ -30,7 +31,7 @@ const AddProxyAppPanel = ({ name, route, priority, close }) => {
   };
 
   return (
-    <div className="add-grid">
+    <AddGridWrapper>
       <Input
         title="Hostname"
         value={hostname}
@@ -45,7 +46,7 @@ const AddProxyAppPanel = ({ name, route, priority, close }) => {
         onChange={setTrimRoute}
       />
       <button onClick={addApp}>Add App</button>
-    </div>
+    </AddGridWrapper>
   );
 };
 

@@ -21,7 +21,7 @@ const register = (app) =>
     }
     tmp.file(
       {
-        mode: 0644,
+        mode: 0664,
         discardDescriptor: true,
         dir: LOCALPROXY_CONFIG_DIR,
         name: filename,

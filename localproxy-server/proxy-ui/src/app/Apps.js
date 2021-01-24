@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import Loader from "react-loaders";
 import App from "./App";
-import useApi from "./useApi";
+import useApi from "../util/useApi";
 
 function constructWebsocketUrl(path) {
   const url = new URL(window.location);
@@ -11,7 +11,7 @@ function constructWebsocketUrl(path) {
 }
 
 function Apps({ showSystem }) {
-  const { data: apps, error, loading, setData: setApps } = useApi({
+  const { data: apps, error, loading, setData: setApps, refresh } = useApi({
     api: "/__proxy__/api",
     deps: [],
   });
@@ -41,7 +41,9 @@ function Apps({ showSystem }) {
     filteredApps.length === 0 ? (
       <span className="noRoutes">No Routes, Just Right</span>
     ) : (
-      filteredApps.map((app) => <App key={app.id} app={app} />)
+      filteredApps.map((app) => (
+        <App refresh={refresh} key={app.id} app={app} />
+      ))
     );
 
   return <>{renderedApps}</>;

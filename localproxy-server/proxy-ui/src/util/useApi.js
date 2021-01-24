@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 function setCache(key, value) {
   if (value === null) {
@@ -18,8 +18,8 @@ const useApi = ({ api, deps = [], json = true, cache = false }) => {
   const [error, setError] = useState(null);
   const [data, setData] = useState(cache ? readCache(api) : null);
 
-  useEffect(() => {
-    const loader = async () => {
+  const loader = useMemo(() => {
+    return async () => {
       try {
         setLoading(true);
         const res = await (await fetch(api))[json ? "json" : "text"]();
@@ -36,12 +36,14 @@ const useApi = ({ api, deps = [], json = true, cache = false }) => {
         setLoading(false);
       }
     };
-
-    loader();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [...deps, api, cache, json]);
 
-  return { loading, error, data, setData };
+  useEffect(() => {
+    loader();
+  }, [loader]);
+
+  return { loading, error, data, setData, refresh: loader };
 };
 
 export default useApi;

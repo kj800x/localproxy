@@ -33,7 +33,7 @@ header .icon {
 }
 
 .content {
-  max-width: 750px;
+  max-width: 850px;
   margin: 0 auto;
   padding: 4px;
 }
@@ -73,10 +73,6 @@ header .icon {
   margin-top: 5px;
   display: flex;
   justify-content: space-between;
-}
-
-.route > .arrow {
-  font-weight: bold;
 }
 
 a {
@@ -144,10 +140,6 @@ a {
 }
 .form-input {
   margin: 12px 0;
-}
-
-.priority {
-  float: right;
 }
 
 ul.route-details {

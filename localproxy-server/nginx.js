@@ -27,14 +27,14 @@ const getAllowDeny = (restrictAccess) =>
     : "";
 
 const getTryFiles = (route) =>
-  route.indexFallback
+  route.rootIndexFallback
     ? `
         try_files $uri $uri/ ${route.route}/index.html;
       `
     : "";
 
 const getAutoIndex = (route) =>
-  route.autoIndex
+  route.dirListings
     ? `
         autoindex on;
       `

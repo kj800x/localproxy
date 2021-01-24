@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
-import UIModal from "./UIModal";
-import Input from "./Input";
+import UIModal from "../util/UIModal";
+import Input from "../util/Input";
 import AddStaticAppPanel from "./AddStaticAppPanel";
 import AddProxyAppPanel from "./AddProxyAppPanel";
-import "./AddModal.css";
+import { AddGridWrapper } from "./AddGridWrapper";
 
 const AddModal = ({ close }) => {
   const [name, setName] = useState("");
@@ -13,7 +13,7 @@ const AddModal = ({ close }) => {
 
   return (
     <UIModal close={close} title="Add App">
-      <div className="add-grid">
+      <AddGridWrapper>
         <Input
           title="Name"
           value={name}
@@ -33,7 +33,7 @@ const AddModal = ({ close }) => {
           onChange={setPriority}
           placeholder={"0"}
         />
-      </div>
+      </AddGridWrapper>
       <Tabs>
         <TabList>
           <Tab>Static</Tab>
