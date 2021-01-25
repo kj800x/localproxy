@@ -10,7 +10,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@kj800x/localproxy-client": "^0.3.0",
+    "@kj800x/localproxy-client": "0.3.0",
     "execa": "^2.0.4"
   },
   "peerDependencies": {
