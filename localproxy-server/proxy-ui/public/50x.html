@@ -4,7 +4,7 @@
     <link rel="icon" href="/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#2d3e50" />
-    <title><!--# echo var="status" default="" --> - localproxy</title>
+    <title>5XX - localproxy</title>
     <style>
       body {
         margin: 0;
@@ -81,14 +81,11 @@
         </header>
         <div class="apps">
           <span class="noRoutes">
-            <p class="errorCode">
-              Error
-              <!--# echo var="status" default="" -->
-            </p>
+            <p class="errorCode">Error 5XX</p>
 
             <p class="summary">
-              <a href="/__proxy__/">localproxy</a> had a 50X error when serving
-              that request.
+              <a href="/__proxy__/">localproxy</a> had a server error when
+              serving that request.
             </p>
 
             <p class="details">

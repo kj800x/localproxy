@@ -13,6 +13,7 @@ const OverflowWrap = styled.span`
   overflow-wrap: break-word;
   word-wrap: break-word;
   word-break: break-word;
+  min-width: 100px;
 `;
 
 const colorByType = (type) => {
@@ -29,6 +30,8 @@ const colorByType = (type) => {
 };
 
 function RouteMapping({ route, updateRoute }) {
+  const urlHostname = new URL(window.location.href).hostname;
+  const isLocal = urlHostname === "localhost" || urlHostname === "127.0.0.1";
   if (route.static) {
     return (
       <>
@@ -52,6 +55,7 @@ function RouteMapping({ route, updateRoute }) {
         <OverflowWrap>{route.staticDir}</OverflowWrap>
         <RouteSettingsWrapper>
           <Tag
+            disabled={!isLocal}
             enabled={route.rootIndexFallback === true}
             hover="Root Index Fallback - If the file isn't found, serve the root /index.html (for single page apps)"
             onClick={() => {
@@ -64,6 +68,7 @@ function RouteMapping({ route, updateRoute }) {
             RIF
           </Tag>
           <Tag
+            disabled={!isLocal}
             enabled={route.dirListings === true}
             hover="Serve directory listings if the index.html isn't found"
             onClick={() => {
@@ -100,6 +105,7 @@ function RouteMapping({ route, updateRoute }) {
       </a>
       <RouteSettingsWrapper>
         <Tag
+          disabled={!isLocal}
           enabled={route.trimRoute === true}
           hover="Trim the matched route before proxying the request"
           onClick={() => {

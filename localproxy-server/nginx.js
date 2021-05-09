@@ -79,6 +79,7 @@ const renderRoute = (route) => {
 const template = (routes) =>
   format(`
   log_format scripts '$document_root | $uri | > $request';
+  client_max_body_size 20M;
 
   server {
     access_log /var/log/nginx/scripts.log scripts;

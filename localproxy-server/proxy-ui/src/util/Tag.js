@@ -71,6 +71,7 @@ export default function Tag({
   hover,
   fixedWidth,
   enabled = true,
+  disabled = false,
   onClick,
   style,
 }) {
@@ -79,9 +80,9 @@ export default function Tag({
       color={color}
       disabled={!(enabled === true)}
       fixedWidth={fixedWidth}
-      clickable={!!onClick}
+      clickable={!!onClick && !disabled}
       title={hover}
-      onClick={onClick || (() => {})}
+      onClick={disabled ? () => {} : onClick || (() => {})}
       style={style}
     >
       <span>{children}</span>

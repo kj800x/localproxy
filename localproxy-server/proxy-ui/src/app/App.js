@@ -28,7 +28,7 @@ function App({ app, refresh }) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id: app.id }),
     });
-    refresh();
+    setTimeout(refresh, 50);
   };
   const updateApp = (newApp) => {
     fetch("/__proxy__/api", {
@@ -36,8 +36,10 @@ function App({ app, refresh }) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(newApp),
     });
-    refresh();
+    setTimeout(refresh, 50);
   };
+  const urlHostname = new URL(window.location.href).hostname;
+  const isLocal = urlHostname === "localhost" || urlHostname === "127.0.0.1";
 
   return (
     <div className="app">
@@ -49,7 +51,7 @@ function App({ app, refresh }) {
               PID: {app.pid}
             </Tag>
           )}
-          {!app.system && (
+          {!app.system && isLocal && (
             <UIIcon
               color="#d94c53"
               iconColor="#2d3e50"
