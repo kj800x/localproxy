@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 export VERSION="${VERSION:=0.3.2}"
 export ARCH="${ARCH:=amd64}"
 
