@@ -22,11 +22,17 @@ const useApi = ({ api, deps = [], json = true, cache = false }) => {
     return async () => {
       try {
         setLoading(true);
-        const res = await (await fetch(api))[json ? "json" : "text"]();
-        if (cache) {
-          setCache(api, res);
+        const response = await fetch(api);
+        if (!response.ok) {
+          setError(response.statusText);
+          setLoading(false);
+          return;
         }
-        setData(res);
+        const result = await response[json ? "json" : "text"]();
+        if (cache) {
+          setCache(api, result);
+        }
+        setData(result);
         setLoading(false);
       } catch (e) {
         setError(e);

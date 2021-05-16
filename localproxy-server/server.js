@@ -63,10 +63,12 @@ store.startup().then(() => {
         } else if (req.method === "POST") {
           const body = await getBody(req);
           const payload = JSON.parse(body);
+          console.info(`Adding ${payload.id} based on endpoint request`);
           store.register(payload);
         } else if (req.method === "DELETE") {
           const body = await getBody(req);
           const payload = JSON.parse(body);
+          console.info(`Removing ${payload.id} based on endpoint request`);
           store.deRegister(payload.id);
         }
         res.end();

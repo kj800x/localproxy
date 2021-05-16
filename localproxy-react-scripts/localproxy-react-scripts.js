@@ -1,19 +1,12 @@
 #!/usr/bin/env node
 
 const localproxy = require("@kj800x/localproxy-client");
-const reactScriptsBin = require.resolve(".bin/react-scripts");
+const process = require("process");
 const execa = require("execa");
 const path = require("path");
-const process = require("process");
 
 const CWD = process.cwd();
-
-const DEFAULT_ROUTES_JSON = {
-  id: CWD,
-  name: path.basename(CWD),
-  pid: process.pid,
-  routes: [],
-};
+const reactScriptsBin = require.resolve(".bin/react-scripts", { paths: [CWD] });
 
 function readRoutesJson() {
   try {
@@ -27,10 +20,24 @@ function readRoutesJson() {
   }
 }
 
-function processRoutesJson(routesJson, reactScriptsPort) {
+function readPackageJson() {
+  try {
+    return require(path.join(CWD, "package.json"));
+  } catch (e) {
+    if (e.message.includes("Cannot find module")) {
+      return null;
+    } else {
+      throw e;
+    }
+  }
+}
+
+function processRoutesJson(packageJson, routesJson, reactScriptsPort) {
+  console.log(packageJson);
+
   return {
-    id: routesJson.id || routesJson.name || CWD,
-    name: routesJson.name || path.basename(CWD),
+    id: routesJson.id || routesJson.name || packageJson.name || CWD,
+    name: routesJson.name || packageJson.name || path.basename(CWD),
     pid: process.pid,
     routes: [
       {
@@ -56,7 +63,8 @@ async function runStart() {
   const port = await localproxy.getAvailablePort();
 
   const localproxyApp = processRoutesJson(
-    readRoutesJson() || DEFAULT_ROUTES_JSON,
+    readPackageJson() || {},
+    readRoutesJson() || {},
     port
   );
 

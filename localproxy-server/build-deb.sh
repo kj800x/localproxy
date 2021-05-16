@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export VERSION="${VERSION:=0.3.1}"
+export VERSION="${VERSION:=0.3.2}"
 export ARCH="${ARCH:=amd64}"
 
 if [ "$EUID" -ne 0 ]

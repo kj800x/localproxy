@@ -18,7 +18,7 @@
     "execa": "^4.1.0",
     "mkdirp": "^1.0.4",
     "nginxbeautifier": "^1.0.18",
-    "ps-node": "^0.1.6",
+    "ps-list": "^7.2.0",
     "rimraf": "^3.0.2",
     "ws": "^7.2.3"
   }

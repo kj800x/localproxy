@@ -1,8 +1,8 @@
 const fs = require("fs");
 const path = require("path");
 const rimraf = require("rimraf");
-const ps = require("ps-node");
 const nginx = require("./nginx");
+const psList = require("ps-list");
 
 const WATCH_DIR = "/etc/localproxy/sites";
 
@@ -56,21 +56,16 @@ function deRegister(id) {
   forceSync();
 }
 
-const isProcessRunning = (pid) =>
-  new Promise((acc, rej) => {
-    ps.lookup({ pid, psargs: ["alx"] }, (err, results) => {
-      if (err) {
-        rej(err);
-      } else {
-        acc(results.length === 1);
-      }
-    });
-  });
+const isProcessRunning = (pid, listOfPs) => {
+  return !!listOfPs.find((ps) => ps.pid === pid);
+};
 
 const pruneDeadApps = async () => {
   const apps = getApps();
+  const listOfPs = await psList();
   for (let app of apps) {
-    if (app.pid && app.pid !== -1 && !(await isProcessRunning(app.pid))) {
+    if (app.pid && app.pid !== -1 && !isProcessRunning(app.pid, listOfPs)) {
+      console.info(`Pruning ${app.id} based on dead pid: ${app.pid}`);
       deRegister(app.id);
     }
   }
