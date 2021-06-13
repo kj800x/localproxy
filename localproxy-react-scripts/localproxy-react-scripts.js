@@ -33,8 +33,6 @@ function readPackageJson() {
 }
 
 function processRoutesJson(packageJson, routesJson, reactScriptsPort) {
-  console.log(packageJson);
-
   return {
     id: routesJson.id || routesJson.name || packageJson.name || CWD,
     name: routesJson.name || packageJson.name || path.basename(CWD),
