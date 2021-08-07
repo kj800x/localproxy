@@ -1,16 +1,43 @@
-const tmp = require("tmp");
-const fs = require("fs");
-const net = require("net");
-const path = require("path");
+import tmp from "tmp";
+import fs from "fs";
+import net from "net";
+import path from "path";
 
 tmp.setGracefulCleanup();
 
 const LOCALPROXY_CONFIG_DIR = "/etc/localproxy/sites";
-const sanitize = (s) => s.replace(/[^a-z0-9]/gi, "_");
-let tmpFileCleanups = {};
+const sanitize = (s: string) => s.replace(/[^a-z0-9]/gi, "_");
+let tmpFileCleanups: { [key: string]: () => void } = {};
 
-const register = (app) =>
-  new Promise((resolve, reject) => {
+type RouteType = "ui" | "api" | "data";
+type LocalproxyStaticRoute = {
+  static: true;
+  route: string;
+  staticDir: string;
+  rootIndexFallback: boolean;
+  dirListings: boolean;
+  priority: number;
+  type: RouteType;
+};
+type LocalproxyDynamicRoute = {
+  static: false;
+  route: string;
+  hostname: string;
+  port: number;
+  trimRoute: boolean;
+  priority: number;
+  type: RouteType;
+};
+type LocalproxyRoute = LocalproxyStaticRoute | LocalproxyDynamicRoute;
+type LocalproxyApp = {
+  id: string;
+  name: string;
+  pid: number;
+  routes: LocalproxyRoute[];
+};
+
+export function register(app: LocalproxyApp): Promise<void> {
+  return new Promise((resolve, reject) => {
     const id = sanitize(app.id);
     const filename = `${id}.json`;
     const contents = JSON.stringify(app);
@@ -21,7 +48,7 @@ const register = (app) =>
     }
     tmp.file(
       {
-        mode: 0664,
+        mode: 0o664,
         discardDescriptor: true,
         dir: LOCALPROXY_CONFIG_DIR,
         name: filename,
@@ -48,30 +75,26 @@ const register = (app) =>
       }
     );
   });
+}
 
-const deregister = (app) => {
+export function deregister(app: LocalproxyApp) {
   const id = sanitize(app.id);
   if (tmpFileCleanups[id]) {
     tmpFileCleanups[id]();
   }
   return Promise.resolve();
-};
+}
 
-const getAvailablePort = () =>
-  new Promise((resolve, reject) => {
+export function getAvailablePort(): Promise<number> {
+  return new Promise((resolve, reject) => {
     const server = net.createServer();
     server.unref();
     server.on("error", reject);
     server.listen(() => {
-      const { port } = server.address();
+      const { port } = server.address() as net.AddressInfo;
       server.close(() => {
         resolve(port);
       });
     });
   });
-
-module.exports = {
-  register,
-  deregister,
-  getAvailablePort,
-};
+}
