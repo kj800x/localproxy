@@ -9,8 +9,8 @@ const LOCALPROXY_CONFIG_DIR = "/etc/localproxy/sites";
 const sanitize = (s: string) => s.replace(/[^a-z0-9]/gi, "_");
 let tmpFileCleanups: { [key: string]: () => void } = {};
 
-type RouteType = "ui" | "api" | "data";
-type LocalproxyStaticRoute = {
+export type RouteType = "ui" | "api" | "data";
+export type LocalproxyStaticRoute = {
   static: true;
   route: string;
   staticDir: string;
@@ -19,7 +19,7 @@ type LocalproxyStaticRoute = {
   priority: number;
   type: RouteType;
 };
-type LocalproxyDynamicRoute = {
+export type LocalproxyDynamicRoute = {
   static: false;
   route: string;
   hostname: string;
@@ -28,8 +28,8 @@ type LocalproxyDynamicRoute = {
   priority: number;
   type: RouteType;
 };
-type LocalproxyRoute = LocalproxyStaticRoute | LocalproxyDynamicRoute;
-type LocalproxyApp = {
+export type LocalproxyRoute = LocalproxyStaticRoute | LocalproxyDynamicRoute;
+export type LocalproxyApp = {
   id: string;
   name: string;
   pid: number;
