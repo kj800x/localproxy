@@ -1,6 +1,7 @@
 const fs = require("fs");
 const { execSync } = require("child_process");
 const nginxBeautifier = require("nginxbeautifier/nginxbeautifier");
+const { readConfig } = require("./config");
 
 const pipeSingle = (a, b) => (arg) => b(a(arg));
 const pipe = (...ops) => ops.reduce(pipeSingle);
@@ -76,7 +77,28 @@ const renderRoute = (route) => {
   `;
 };
 
-const template = (routes) =>
+function renderSslBlock(config) {
+  if (!config || !config.ssl || config.ssl === "enabled") {
+    return `
+      listen 443 ssl http2;
+      ssl_certificate /etc/localproxy/localproxy.pem;
+      ssl_certificate_key /etc/localproxy/localproxy-key.pem;
+    `;
+  }
+  if (config.ssl === "custom") {
+    return `
+      listen 443 ssl http2;
+      ssl_certificate ${config.sslCert};
+      ssl_certificate_key ${config.sslCertKey};
+    `;
+  }
+  if (config.ssl === "disabled") {
+    return "";
+  }
+  throw new Error(`Unexpected config.ssl value: ${config.ssl}`);
+}
+
+const template = (routes, config) =>
   format(`
   log_format scripts '$document_root | $uri | > $request';
   client_max_body_size 20M;
@@ -86,9 +108,8 @@ const template = (routes) =>
 
     listen 80;
     listen [::]:80;
-    listen 443 ssl http2;
-    ssl_certificate /etc/localproxy/localproxy.pem;
-    ssl_certificate_key /etc/localproxy/localproxy-key.pem;
+
+    ${renderSslBlock(config)}
 
     index index.html;
 
@@ -131,9 +152,11 @@ const buildFinalRoutes = (apps) => {
 };
 
 function write(apps) {
+  const config = readConfig();
+
   const routes = buildFinalRoutes(apps);
 
-  const content = template(routes);
+  const content = template(routes, config);
   fs.writeFileSync("/etc/nginx/conf.d/localproxy.conf", content);
 }
 
