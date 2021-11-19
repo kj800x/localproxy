@@ -9,7 +9,7 @@ const WATCH_DIR = "/etc/localproxy/sites";
 let apps = {};
 let onSyncHandler = () => {};
 
-const sanitize = (s) => s.replace(/[^a-z0-9]/gi, "_");
+const sanitize = (s) => s.replace(/[^a-z0-9-]/gi, "-");
 
 const forceSync = () => {
   const files = fs.readdirSync(WATCH_DIR);
@@ -52,6 +52,8 @@ function deRegister(id) {
   const file = `${sanitize(id)}.json`;
   if (fs.existsSync(path.join(WATCH_DIR, file))) {
     fs.unlinkSync(path.join(WATCH_DIR, file));
+  } else {
+    console.warn(`Unable to deregister ${id}, does a ${file} file exist?`);
   }
   forceSync();
 }

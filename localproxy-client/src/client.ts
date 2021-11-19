@@ -6,7 +6,7 @@ import path from "path";
 tmp.setGracefulCleanup();
 
 const LOCALPROXY_CONFIG_DIR = "/etc/localproxy/sites";
-const sanitize = (s: string) => s.replace(/[^a-z0-9]/gi, "_");
+const sanitize = (s: string) => s.replace(/[^a-z0-9-]/gi, "-");
 let tmpFileCleanups: { [key: string]: () => void } = {};
 
 export type RouteType = "ui" | "api" | "data";
