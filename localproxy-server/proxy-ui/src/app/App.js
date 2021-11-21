@@ -13,6 +13,26 @@ const RoutesGrid = styled.div`
   row-gap: 4px;
   align-items: center;
   justify-content: center;
+
+  .normal-tags {
+    display: block;
+  }
+
+  .small-screen-tags {
+    display: none;
+  }
+
+  @media screen and (max-width: 490px) {
+    .normal-tags {
+      display: none;
+    }
+
+    grid-template-columns: auto auto 1fr auto auto;
+
+    .small-screen-tags {
+      display: contents;
+    }
+  }
 `;
 
 const replaceElement = (arr, idx, elem) => {

@@ -35,7 +35,7 @@ function RouteMapping({ route, updateRoute }) {
   if (route.static) {
     return (
       <>
-        <span>
+        <span className="normal-tags">
           <a href={route.route}>
             {route.type && (
               <Tag color={colorByType(route.type)} fixedWidth={true}>
@@ -77,6 +77,16 @@ function RouteMapping({ route, updateRoute }) {
           >
             DIR
           </Tag>
+          <div className="small-screen-tags">
+            <Tag color="oz" hover="Static">
+              S
+            </Tag>
+            {route.type && (
+              <Tag color={colorByType(route.type)} fixedWidth={true}>
+                {route.type}
+              </Tag>
+            )}
+          </div>
         </RouteSettingsWrapper>
       </>
     );
@@ -84,17 +94,15 @@ function RouteMapping({ route, updateRoute }) {
   const target = `http://${route.hostname}:${route.port}`;
   return (
     <>
-      <span>
-        <a href={route.route}>
-          {route.type && (
-            <Tag color={colorByType(route.type)} fixedWidth={true}>
-              {route.type}
-            </Tag>
-          )}
-          <Tag color="purple" hover="Dynamic">
-            D
+      <span className="normal-tags">
+        {route.type && (
+          <Tag color={colorByType(route.type)} fixedWidth={true}>
+            {route.type}
           </Tag>
-        </a>
+        )}
+        <Tag color="purple" hover="Dynamic">
+          D
+        </Tag>
       </span>
       <a href={route.route}>
         <OverflowWrap>{route.route}</OverflowWrap>
@@ -114,6 +122,18 @@ function RouteMapping({ route, updateRoute }) {
         >
           TRIM
         </Tag>
+        <div className="small-screen-tags">
+          <a href={route.route}>
+            <Tag color="purple" hover="Dynamic">
+              D
+            </Tag>
+            {route.type && (
+              <Tag color={colorByType(route.type)} fixedWidth={true}>
+                {route.type}
+              </Tag>
+            )}
+          </a>
+        </div>
       </RouteSettingsWrapper>
     </>
   );

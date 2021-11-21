@@ -5,7 +5,6 @@ import useApi from "../util/useApi";
 
 const SslSettingsWrapper = styled.div`
   display: grid;
-  grid-template-columns: 1fr 3fr 100px;
   column-gap: 10px;
   row-gap: 20px;
 
@@ -50,13 +49,13 @@ function download(filename, text) {
   document.body.removeChild(element);
 }
 
-async function downloadCert() {
+async function downloadCert({ hostname }) {
   const res = await fetch("/__proxy__/api/ssl/cert");
   const text = await res.text();
-  download("rootCA.pem", text);
+  download(`rootCA-${hostname}.pem`, text);
 }
 
-const Trust = () => {
+const Trust = ({ editingEnabled }) => {
   const [trustValue, setTrustValue] = useState("");
   const [trustResult, setTrustResult] = useState("");
   const trust = useCallback(async () => {
@@ -81,12 +80,16 @@ const Trust = () => {
   return (
     <>
       <h3>Trust</h3>
-      <input
-        type="text"
-        value={trustValue}
-        onChange={(event) => setTrustValue(event.target.value)}
-      />
-      <button onClick={trust}>Trust</button>
+      {editingEnabled && (
+        <>
+          <input
+            type="text"
+            value={trustValue}
+            onChange={(event) => setTrustValue(event.target.value)}
+          />
+          <button onClick={trust}>Trust</button>
+        </>
+      )}
       {trustList && (
         <div className="status">
           {trustList
@@ -107,7 +110,7 @@ const Trust = () => {
   );
 };
 
-const Hostnames = () => {
+const Hostnames = ({ editingEnabled }) => {
   const [hostname, setHostname] = useState("");
   const [addHostnameResult, setAddHostnameResult] = useState("");
   const addHostname = useCallback(async () => {
@@ -132,12 +135,16 @@ const Hostnames = () => {
   return (
     <>
       <h3>Hostnames</h3>
-      <input
-        type="text"
-        value={hostname}
-        onChange={(event) => setHostname(event.target.value)}
-      />
-      <button onClick={addHostname}>Add</button>
+      {editingEnabled && (
+        <>
+          <input
+            type="text"
+            value={hostname}
+            onChange={(event) => setHostname(event.target.value)}
+          />
+          <button onClick={addHostname}>Add</button>
+        </>
+      )}
       {hostnames && <div className="status">{hostnames.join(", ")}</div>}
       {addHostnameResult && (
         <div
@@ -152,21 +159,21 @@ const Hostnames = () => {
   );
 };
 
-const Download = () => {
+const Download = ({ hostname }) => {
   return (
     <>
       <h3 className="download-title">Download Cert</h3>
-      <button onClick={downloadCert}>Download</button>
+      <button onClick={() => downloadCert({ hostname })}>Download</button>
     </>
   );
 };
 
-export const SslSettings = () => {
+export const SslSettings = ({ isLocal, hostname }) => {
   return (
     <SslSettingsWrapper>
-      <Trust />
-      <Hostnames />
-      <Download />
+      <Trust editingEnabled={isLocal} />
+      <Hostnames editingEnabled={isLocal} />
+      <Download hostname={hostname} />
     </SslSettingsWrapper>
   );
 };

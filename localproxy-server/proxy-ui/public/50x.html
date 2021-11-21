@@ -23,7 +23,7 @@
         padding: 12px;
       }
       .apps {
-        width: 750px;
+        max-width: 750px;
         margin: 0 auto;
       }
       .route {
@@ -50,7 +50,6 @@
       }
       .noRoutes {
         text-align: center;
-        width: 100%;
         display: block;
         padding: 24px;
         font-size: xx-large;
@@ -70,6 +69,15 @@
 
       .details {
         font-size: small;
+        line-height: 1.6em;
+      }
+
+      code {
+        padding: 0.2em 0.4em;
+        margin: 0;
+        background-color: rgba(175, 184, 193, 0.4);
+        border-radius: 6px;
+        font-size: medium;
       }
     </style>
   </head>
@@ -84,8 +92,8 @@
             <p class="errorCode">Error 5XX</p>
 
             <p class="summary">
-              <a href="/__proxy__/">localproxy</a> had a server error when
-              serving that request.
+              <a href="/__proxy__/">localproxy</a> encountered a server error
+              when serving that request.
             </p>
 
             <p class="details">
@@ -95,7 +103,7 @@
 
             <p class="details">
               Has the server died and failed to unregister itself from
-              localproxy?
+              localproxy? Alternatively, is the server still turning itself on?
             </p>
           </span>
         </div>

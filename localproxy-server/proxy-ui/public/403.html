@@ -23,7 +23,7 @@
         padding: 12px;
       }
       .apps {
-        width: 750px;
+        max-width: 750px;
         margin: 0 auto;
       }
       .route {
@@ -50,7 +50,6 @@
       }
       .noRoutes {
         text-align: center;
-        width: 100%;
         display: block;
         padding: 24px;
         font-size: xx-large;
@@ -70,6 +69,15 @@
 
       .details {
         font-size: small;
+        line-height: 1.6em;
+      }
+
+      code {
+        padding: 0.2em 0.4em;
+        margin: 0;
+        background-color: rgba(175, 184, 193, 0.4);
+        border-radius: 6px;
+        font-size: medium;
       }
     </style>
   </head>
@@ -84,8 +92,8 @@
             <p class="errorCode">Error 403</p>
 
             <p class="summary">
-              <a href="/__proxy__/">localproxy</a> reached a 403 condition when
-              trying to serve that request.
+              <a href="/__proxy__/">localproxy</a> encountered a 403 condition
+              when trying to serve that request.
             </p>
 
             <p class="details">
@@ -95,8 +103,10 @@
             </p>
 
             <p class="details">
-              Does your request match a file in your directory? Did you forget
-              to enable DIR or RIF?
+              Does your request match a file in your directory? Is that file
+              readable by the <code>localproxy</code> user? Do you need to
+              enable the directory listing (<code>DIR</code>) or root index
+              fallback (<code>RIF</code>) settings?
             </p>
           </span>
         </div>
