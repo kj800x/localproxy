@@ -2,7 +2,7 @@
 
 set -e
 
-export VERSION="${VERSION:=0.3.4}"
+export VERSION="${VERSION:=0.3.5}"
 export ARCH="${ARCH:=amd64}"
 
 if [ "$EUID" -ne 0 ]
