@@ -57,6 +57,34 @@ function processRoutesJson(packageJson, routesJson, reactScriptsPort) {
   };
 }
 
+function processServeRoutesJson(packageJson, routesJson) {
+  const route = packageJson["##homepage"] || packageJson["homepage"];
+
+  return {
+    id: routesJson.id || routesJson.name || packageJson.name || CWD,
+    name: routesJson.name || packageJson.name || path.basename(CWD),
+    pid: process.pid,
+    routes: [
+      {
+        static: true,
+        route: route.replace(/\/$/, "") || "/",
+        staticDir: path.join(CWD, "build"),
+        type: "ui",
+        rootIndexFallback: true,
+        dirListings: false,
+        priority: 0,
+      },
+      ...(routesJson.routes || []).map((route) => ({
+        ...route,
+        priority: route.priority || 0,
+        staticDir: route.staticDir
+          ? path.resolve(CWD, route.staticDir) + "/"
+          : undefined,
+      })),
+    ],
+  };
+}
+
 async function runStart() {
   const port = await localproxy.getAvailablePort();
 
@@ -91,6 +119,26 @@ async function runBuild() {
   }
 }
 
+async function runServe() {
+  const localproxyApp = processServeRoutesJson(
+    readPackageJson() || {},
+    readRoutesJson() || {}
+  );
+
+  await localproxy.register(localproxyApp);
+
+  console.log("🎉 Serving from the 'build' folder");
+
+  // Keep alive
+  process.stdin.resume();
+
+  process.on("SIGINT", async () => {
+    await localproxy.deregister(app);
+
+    process.stdin.pause();
+  });
+}
+
 async function runEject() {
   await execa("sed", [
     "-i",
@@ -121,6 +169,8 @@ async function main() {
       return await runBuild();
     case "eject":
       return await runEject();
+    case "serve":
+      return await runServe();
     case "test":
       return await runDirect("test");
     default:
