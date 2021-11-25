@@ -2,7 +2,7 @@
 
 set -e
 
-export VERSION="${VERSION:=0.3.5}"
+export VERSION="${VERSION:=0.3.6}"
 export ARCH="${ARCH:=amd64}"
 
 if [ "$EUID" -ne 0 ]
@@ -47,6 +47,7 @@ N_PREFIX=./n-tmp n --arch ${N_ARCH} 12.3.1
 mkdir -p usr/local/share/localproxy/proxy-ui
 cp -r ../../*js usr/local/share/localproxy
 cp -r ../../node_modules usr/local/share/localproxy
+echo ${VERSION} > usr/local/share/localproxy/version.txt
 cp -r ../../proxy-ui/build usr/local/share/localproxy/proxy-ui
 cp `N_PREFIX=./n-tmp n which 12.3.1` usr/local/share/localproxy/node
 wget https://github.com/FiloSottile/mkcert/releases/download/v1.4.2/mkcert-v1.4.2-linux-${MKCERT_ARCH} -O usr/local/share/localproxy/mkcert
