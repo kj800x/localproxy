@@ -7,6 +7,7 @@ const os = require("os");
 const store = require("./store");
 const { trust, getCert, addHost, listTrust, listHosts } = require("./ssl");
 const { getBody } = require("./util");
+const { getVersion } = require("./version");
 
 store.startup().then(() => {
   const server = http.createServer().listen(0, "127.0.0.1");
@@ -71,6 +72,9 @@ store.startup().then(() => {
           console.info(`Removing ${payload.id} based on endpoint request`);
           store.deRegister(payload.id);
         }
+        res.end();
+      } else if (req.url.includes("/version")) {
+        res.write(getVersion());
         res.end();
       } else if (req.url.includes("/ssl/trust/list")) {
         res.write(JSON.stringify(await listTrust()));
