@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import Input from "../util/Input";
 import { AddGridWrapper } from "./AddGridWrapper";
 
-const AddProxyAppPanel = ({ name, route, priority, close }) => {
+const AddProxyAppPanel = ({ name, route, priority, persist, close }) => {
   const [hostname, setHostname] = useState("");
   const [port, setPort] = useState("");
   const [trimRoute, setTrimRoute] = useState(false);
@@ -15,6 +15,7 @@ const AddProxyAppPanel = ({ name, route, priority, close }) => {
       body: JSON.stringify({
         id: name || "Default Name",
         name: name || "Default Name",
+        persist: persist || undefined,
         routes: [
           {
             static: false,

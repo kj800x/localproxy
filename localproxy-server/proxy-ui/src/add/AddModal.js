@@ -10,6 +10,7 @@ const AddModal = ({ close }) => {
   const [name, setName] = useState("");
   const [route, setRoute] = useState("");
   const [priority, setPriority] = useState("0");
+  const [persist, setPersist] = useState(false);
 
   return (
     <UIModal close={close} title="Add App">
@@ -33,6 +34,12 @@ const AddModal = ({ close }) => {
           onChange={setPriority}
           placeholder={"0"}
         />
+        <Input
+          title="Persist"
+          type="checkbox"
+          value={persist}
+          onChange={setPersist}
+        />
       </AddGridWrapper>
       <Tabs>
         <TabList>
@@ -44,6 +51,7 @@ const AddModal = ({ close }) => {
             name={name}
             route={route}
             priority={priority}
+            persist={persist}
             close={close}
           />
         </TabPanel>
@@ -52,6 +60,7 @@ const AddModal = ({ close }) => {
             name={name}
             route={route}
             priority={priority}
+            persist={persist}
             close={close}
           />
         </TabPanel>

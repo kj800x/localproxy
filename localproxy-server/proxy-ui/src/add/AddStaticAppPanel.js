@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import Input from "../util/Input";
 import { AddGridWrapper } from "./AddGridWrapper";
 
-const AddStaticAppPanel = ({ name, route, priority, close }) => {
+const AddStaticAppPanel = ({ name, route, priority, persist, close }) => {
   const [staticDir, setStaticDir] = useState("");
   const [rootIndexFallback, setRootIndexFallback] = useState(false);
   const [dirListings, setDirListings] = useState(false);
@@ -15,6 +15,7 @@ const AddStaticAppPanel = ({ name, route, priority, close }) => {
       body: JSON.stringify({
         id: name || "Default Name",
         name: name || "Default Name",
+        persist: persist || undefined,
         routes: [
           {
             static: true,

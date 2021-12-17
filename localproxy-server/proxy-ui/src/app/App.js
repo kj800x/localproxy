@@ -1,5 +1,5 @@
 import React from "react";
-import { FaTools, FaTrash } from "react-icons/fa";
+import { FaInfinity, FaTools, FaTrash } from "react-icons/fa";
 import UIIcon from "../util/UIIcon";
 import Route from "./Route";
 import Tag from "../util/Tag";
@@ -71,16 +71,29 @@ function App({ app, refresh }) {
               PID: {app.pid}
             </Tag>
           )}
-          {!app.system && isLocal && (
+          {app.persist && (
             <UIIcon
-              color="#d94c53"
-              iconColor="#2d3e50"
-              Icon={FaTrash}
-              onClick={deleteApp}
+              color="#6a78d1"
+              iconColor="#e5f5f8"
+              title="This app will remain between restarts"
+              Icon={FaInfinity}
             />
           )}
           {app.system && (
-            <UIIcon iconColor="#2d3e50" color="#00a38d" Icon={FaTools} />
+            <UIIcon
+              title="This app is essential for the localproxy system"
+              iconColor="#e5f5f8"
+              color="#00a38d"
+              Icon={FaTools}
+            />
+          )}
+          {!app.system && isLocal && (
+            <UIIcon
+              color="#d94c53"
+              iconColor="#e5f5f8"
+              Icon={FaTrash}
+              onClick={deleteApp}
+            />
           )}
         </div>
       </h2>
