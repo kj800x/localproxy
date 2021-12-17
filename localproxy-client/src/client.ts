@@ -32,57 +32,85 @@ export type LocalproxyRoute = LocalproxyStaticRoute | LocalproxyDynamicRoute;
 export type LocalproxyApp = {
   id: string;
   name: string;
-  pid: number;
+  pid?: number;
+  persist?: true;
   routes: LocalproxyRoute[];
 };
 
-export function register(app: LocalproxyApp): Promise<void> {
+function groupWarning(message: string) {
+  console.error(`⛔ ${message},\n   are you a member of localproxyusers?`);
+  console.error(
+    `💡 Try running "sudo usermod -a -G localproxyusers $USER"\n   and then restarting your login session.`
+  );
+  console.log("");
+}
+
+async function getFile(
+  filename: string,
+  persist: boolean = false
+): Promise<{
+  filePath: string;
+  cleanup: () => void;
+}> {
   return new Promise((resolve, reject) => {
-    const id = sanitize(app.id);
-    const filename = `${id}.json`;
-    const contents = JSON.stringify(app);
-    const fullPath = path.join(LOCALPROXY_CONFIG_DIR, filename);
-    if (fs.existsSync(fullPath)) {
-      console.warn("⚠️  We had to clean up an existing localproxy file!");
-      fs.unlinkSync(fullPath);
-    }
     tmp.file(
       {
         mode: 0o664,
         discardDescriptor: true,
         dir: LOCALPROXY_CONFIG_DIR,
         name: filename,
+        keep: persist,
       },
       (err, name, _fd, cleanup) => {
         if (err) {
-          console.error(
-            "Failed to create localproxy file, are you a member of localproxyusers?"
-          );
-          reject(err);
-          return;
+          return reject(err);
         }
-        fs.writeFile(name, contents, (err) => {
-          if (err) {
-            console.error(
-              "Failed to write localproxy file, are you a member of localproxyusers?"
-            );
-            reject(err);
-            return;
-          }
-          tmpFileCleanups[id] = cleanup;
-          resolve();
-        });
+        resolve({ filePath: name, cleanup });
       }
     );
   });
 }
 
-export function deregister(app: LocalproxyApp) {
+export async function register(app: LocalproxyApp): Promise<void> {
+  const id = sanitize(app.id);
+  const filename = `${id}.json`;
+  const fullPath = path.join(LOCALPROXY_CONFIG_DIR, filename);
+  try {
+    if (fs.existsSync(fullPath)) {
+      fs.unlinkSync(fullPath);
+      console.warn("⚠️  We had to clean up an existing localproxy file!");
+    }
+  } catch (err) {
+    groupWarning("Failed to clean up an existing localproxy file");
+    throw err;
+  }
+
+  if (app.persist) {
+    app = { ...app };
+    delete app.pid;
+  }
+  const contents = JSON.stringify(app);
+
+  try {
+    const { filePath, cleanup } = await getFile(filename, app.persist);
+    fs.writeFileSync(filePath, contents);
+    tmpFileCleanups[id] = cleanup;
+  } catch (err) {
+    groupWarning("Failed to write localproxy file");
+    throw err;
+  }
+}
+
+export function deregister(app: LocalproxyApp): void {
   const id = sanitize(app.id);
   if (tmpFileCleanups[id]) {
     tmpFileCleanups[id]();
   }
-  return Promise.resolve();
+  const filename = `${id}.json`;
+  const fullPath = path.join(LOCALPROXY_CONFIG_DIR, filename);
+  if (fs.existsSync(fullPath)) {
+    fs.unlinkSync(fullPath);
+  }
 }
 
 export function getAvailablePort(): Promise<number> {
