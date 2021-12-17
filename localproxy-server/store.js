@@ -56,7 +56,7 @@ function register(payload) {
   forceSync();
 }
 
-function deRegister(id) {
+function deregister(id) {
   const file = `${sanitize(id)}.json`;
   if (fs.existsSync(path.join(WATCH_DIR, file))) {
     fs.unlinkSync(path.join(WATCH_DIR, file));
@@ -76,7 +76,7 @@ const pruneDeadApps = async () => {
   for (let app of apps) {
     if (app.pid && app.pid !== -1 && !isProcessRunning(app.pid, listOfPs)) {
       console.info(`Pruning ${app.id} based on dead pid: ${app.pid}`);
-      deRegister(app.id);
+      deregister(app.id);
     }
   }
 };
@@ -87,7 +87,7 @@ module.exports = {
   startup,
   forceSync,
   register,
-  deRegister,
+  deregister,
   getApps,
   onSync: (fn) => (onSyncHandler = fn),
 };

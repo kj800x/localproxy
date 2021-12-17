@@ -71,7 +71,7 @@ server.on("request", async (req, res) => {
         const body = await getBody(req);
         const payload = JSON.parse(body);
         console.info(`Removing ${payload.id} based on endpoint request`);
-        store.deRegister(payload.id);
+        store.deregister(payload.id);
       }
       res.end();
     } else if (req.url.includes("/version")) {
