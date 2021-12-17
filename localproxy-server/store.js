@@ -16,7 +16,7 @@ const forceSync = () => {
   apps = {};
   for (const file of files) {
     if (!file.endsWith(".json")) continue;
-    var contents = fs.readFileSync(path.join(WATCH_DIR, file), "utf8");
+    const contents = fs.readFileSync(path.join(WATCH_DIR, file), "utf8");
     try {
       const app = JSON.parse(contents);
       apps[app["id"]] = app;
@@ -27,16 +27,24 @@ const forceSync = () => {
 };
 
 const startup = () => {
-  return new Promise((resolve, reject) => {
-    rimraf(path.join(WATCH_DIR, "*"), (err) => {
-      if (err) {
-        reject(err);
-        return;
+  const files = fs.readdirSync(WATCH_DIR);
+  for (const file of files) {
+    try {
+      if (file.endsWith(".json")) {
+        const contents = JSON.parse(
+          fs.readFileSync(path.join(WATCH_DIR, file), "utf8")
+        );
+        if (contents.persist) {
+          continue;
+        }
       }
-      fs.watch(WATCH_DIR, forceSync);
-      resolve();
-    });
-  });
+    } catch (e) {
+      console.error("Error during startup", e);
+    }
+    fs.unlinkSync(path.join(WATCH_DIR, file));
+  }
+
+  fs.watch(WATCH_DIR, forceSync);
 };
 
 const getApps = () => Object.values(apps);
