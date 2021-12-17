@@ -4,6 +4,7 @@
     <link rel="icon" href="/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#2d3e50" />
+    <meta http-equiv="refresh" content="5" />
     <title>403 - localproxy</title>
     <style>
       body {
@@ -93,13 +94,18 @@
 
             <p class="summary">
               <a href="/__proxy__/">localproxy</a> encountered a 403 condition
-              when trying to serve that request.
+              trying to serve that request.
             </p>
 
             <p class="details">
               This is usually happens when a static directory matches the route
               but the route either doesn't match a file in that directory or the
               file has the read permission turned off.
+            </p>
+
+            <p class="details">
+              This can happen if static assets are being rebuilt. If this is the
+              case, sit tight and your page should load momentarily.
             </p>
 
             <p class="details">
