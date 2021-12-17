@@ -1,11 +1,11 @@
 {
   "name": "@kj800x/localproxy-server",
   "private": true,
-  "version": "0.0.3",
+  "version": "0.3.7",
   "description": "An API to dynamically configure nginx for static and reverse proxy routes",
   "scripts": {
     "start": "sudo -u localproxy /home/kevin/.nvm/versions/node/v12.3.1/bin/node server.js",
-    "build-deb": "sudo bash build-deb.sh",
+    "build-deb": "bash build-deb.sh",
     "install-deb": "sudo dpkg -i build/*deb"
   },
   "author": "Kevin Johnson <kevin@kj800x.com>",

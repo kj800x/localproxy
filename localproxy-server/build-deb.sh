@@ -2,13 +2,13 @@
 
 set -e
 
-export VERSION="${VERSION:=0.3.6}"
-export ARCH="${ARCH:=amd64}"
-
-if [ "$EUID" -ne 0 ]
-  then echo "Please run as root"
+if [ "$EUID" -eq 0 ]
+  then echo "Please do not run as root"
   exit
 fi
+
+export VERSION="${VERSION:=$(node -e "console.log(require('./package.json').version)")}"
+export ARCH="${ARCH:=amd64}"
 
 if [ "$ARCH" = "amd64" ]
   then export N_ARCH="x64"
@@ -175,5 +175,4 @@ chmod +x DEBIAN/postrm
 
 # Build the deb file
 cd ..
-chown -R root localproxy_${VERSION}_${ARCH}
-dpkg-deb --build localproxy_${VERSION}_${ARCH}
+dpkg-deb --build --root-owner-group localproxy_${VERSION}_${ARCH}
