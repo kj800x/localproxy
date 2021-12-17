@@ -113,6 +113,12 @@ const template = (routes, config) =>
 
     index index.html;
 
+    error_page 403 /403.html;
+    location = /403.html {
+      root ${__dirname}/proxy-ui/build/;
+      internal;
+    }
+
     error_page 404 /404.html;
     location = /404.html {
       root ${__dirname}/proxy-ui/build/;
