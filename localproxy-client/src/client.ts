@@ -103,11 +103,16 @@ export async function register(app: LocalproxyApp): Promise<void> {
 
 export function deregister(app: LocalproxyApp): void {
   const id = sanitize(app.id);
+  const filename = `${id}.json`;
+  const fullPath = path.join(LOCALPROXY_CONFIG_DIR, filename);
+  if (!fs.existsSync(fullPath)) {
+    console.warn(
+      "⚠️  We tried to clean up a localproxy file but it didn't exist!"
+    );
+  }
   if (tmpFileCleanups[id]) {
     tmpFileCleanups[id]();
   }
-  const filename = `${id}.json`;
-  const fullPath = path.join(LOCALPROXY_CONFIG_DIR, filename);
   if (fs.existsSync(fullPath)) {
     fs.unlinkSync(fullPath);
   }
