@@ -34,7 +34,7 @@ function readPackageJson() {
 
 function processRoutesJson(packageJson, routesJson, reactScriptsPort) {
   return {
-    id: routesJson.id || routesJson.name || packageJson.name || CWD,
+    id: `${routesJson.id || routesJson.name || packageJson.name || CWD}-dev`,
     name: routesJson.name || packageJson.name || path.basename(CWD),
     pid: process.pid,
     routes: [
@@ -61,7 +61,7 @@ function processServeRoutesJson(packageJson, routesJson) {
   const route = packageJson["##homepage"] || packageJson["homepage"];
 
   return {
-    id: routesJson.id || routesJson.name || packageJson.name || CWD,
+    id: `${routesJson.id || routesJson.name || packageJson.name || CWD}-build`,
     name: routesJson.name || packageJson.name || path.basename(CWD),
     pid: process.pid,
     routes: [
@@ -97,7 +97,7 @@ async function runStart() {
   await localproxy.register(localproxyApp);
 
   process.on("SIGINT", async () => {
-    await localproxy.deregister(localproxyApp);
+    localproxy.deregister(localproxyApp);
   });
 
   await execa(reactScriptsBin, ["start"], {
@@ -133,10 +133,34 @@ async function runServe() {
   process.stdin.resume();
 
   process.on("SIGINT", async () => {
-    await localproxy.deregister(app);
+    localproxy.deregister(localproxyApp);
 
     process.stdin.pause();
   });
+}
+
+async function runEnable() {
+  const localproxyApp = processServeRoutesJson(
+    readPackageJson() || {},
+    readRoutesJson() || {}
+  );
+
+  localproxyApp.persist = true;
+
+  await localproxy.register(localproxyApp);
+
+  console.log("🎉 Registered the build folder as a persistent app");
+}
+
+async function runDisable() {
+  const localproxyApp = processServeRoutesJson(
+    readPackageJson() || {},
+    readRoutesJson() || {}
+  );
+
+  localproxy.deregister(localproxyApp);
+
+  console.log("🎉 Unregistered the build folder");
 }
 
 async function runEject() {
@@ -171,6 +195,10 @@ async function main() {
       return await runEject();
     case "serve":
       return await runServe();
+    case "enable":
+      return await runEnable();
+    case "disable":
+      return await runDisable();
     case "test":
       return await runDirect("test");
     default:
