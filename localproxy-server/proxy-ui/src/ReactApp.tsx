@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { FaTools, FaPlus, FaLock } from "react-icons/fa";
 import Apps from "./app/Apps";
 import UIIcon from "./util/UIIcon";
 import useApi from "./util/useApi";
 import { SslSettings } from "./ssl/SslSettings";
-import AddModal from "./add/AddModal";
+import { AddModal } from "./add/AddModal";
 import UIModal from "./util/UIModal";
 
 function ReactApp() {
@@ -15,7 +15,7 @@ function ReactApp() {
   });
   const [showSystem, setShowSystem] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
-  const [showSslSettings, setShowSslSettings] = useState(false);
+  const [showSslSettings, setShowSslSettings] = useState<boolean>(false);
   const urlHostname = new URL(window.location.href).hostname;
   const isLocal = urlHostname === "localhost" || urlHostname === "127.0.0.1";
 

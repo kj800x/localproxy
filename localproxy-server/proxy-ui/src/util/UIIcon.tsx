@@ -1,6 +1,13 @@
-import React from "react";
+import { FC } from "react";
+import { IconType } from "react-icons/lib";
 
-function UIIcon({ Icon, title, color, onClick, iconColor }) {
+const UIIcon: FC<{
+  Icon: IconType;
+  color: string;
+  iconColor: string;
+  title?: string;
+  onClick?: () => void;
+}> = ({ Icon, title, color, onClick, iconColor }) => {
   return (
     <span
       className="icon"
@@ -15,6 +22,6 @@ function UIIcon({ Icon, title, color, onClick, iconColor }) {
       <Icon size=".6em" color={iconColor} />
     </span>
   );
-}
+};
 
 export default UIIcon;

@@ -1,7 +1,12 @@
-import React from "react";
+import React, { CSSProperties, FC } from "react";
 import styled from "styled-components";
 
-const COLORS = {
+interface Theme {
+  border: string;
+  background: string;
+  color: string;
+}
+const COLORS: { [key: string]: Theme } = {
   oz: {
     border: "#00bda5",
     background: "#e5f8f6",
@@ -34,16 +39,28 @@ const COLORS = {
   },
   default: {
     border: "black",
+    background: "inherit",
+    color: "#33475b",
   },
   disabled: {
     color: "lightgrey",
+    border: "inherit",
+    background: "inherit",
   },
 };
-const getColor = (key) => ({ color, disabled }) => {
-  return COLORS[disabled ? "disabled" : color][key] || "inherit";
-};
 
-const TagWrapper = styled.div`
+const getColor =
+  (key: keyof Theme) =>
+  ({ color, disabled }: { color: keyof typeof COLORS; disabled: boolean }) => {
+    return COLORS[disabled ? "disabled" : color][key];
+  };
+
+const TagWrapper = styled.div<{
+  color: keyof typeof COLORS;
+  disabled: boolean;
+  fixedWidth: boolean;
+  clickable: boolean;
+}>`
   display: inline-flex;
   margin: 0 4px;
   justify-content: center;
@@ -65,7 +82,15 @@ const TagWrapper = styled.div`
   }
 `;
 
-export default function Tag({
+export const Tag: FC<{
+  color: keyof typeof COLORS;
+  hover: string;
+  fixedWidth: boolean;
+  enabled: boolean;
+  disabled: boolean;
+  onClick: () => void;
+  style: CSSProperties;
+}> = ({
   color = "default",
   children,
   hover,
@@ -74,10 +99,10 @@ export default function Tag({
   disabled = false,
   onClick,
   style,
-}) {
+}) => {
   return (
     <TagWrapper
-      color={color}
+      color={color as string}
       disabled={!(enabled === true)}
       fixedWidth={fixedWidth}
       clickable={!!onClick && !disabled}
@@ -88,4 +113,4 @@ export default function Tag({
       <span>{children}</span>
     </TagWrapper>
   );
-}
+};

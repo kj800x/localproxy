@@ -1,22 +1,21 @@
-import React from "react";
+import { FC, ReactNode } from "react";
 import { MdClose } from "react-icons/md";
 import UIIcon from "./UIIcon";
 
-function UIModal({ children, close, title }) {
-  return (
+const UIModal: FC<{ children: ReactNode; close: () => void; title: string }> =
+  ({ children, close, title }) => (
     <div className="modal">
-      <h3 className="modal-top">
+      <h2 className="modal-top">
         {title}
         <UIIcon
           color="#d94c53"
-          iconColor="#2d3e50"
+          iconColor="#e5f5f8"
           Icon={MdClose}
           onClick={close}
         />
-      </h3>
+      </h2>
       <div className="modal-children">{children}</div>
     </div>
   );
-}
 
 export default UIModal;

@@ -1,21 +1,29 @@
 import { useEffect, useMemo, useState } from "react";
 
-function setCache(key, value) {
+function setCache(key: string, value: string | null) {
   if (value === null) {
     localStorage.removeItem(key);
   } else {
     localStorage.setItem(key, value);
   }
 }
-function readCache(key, value) {
+
+function readCache(key: string): string | null {
   return localStorage.getItem(key);
 }
 
-const useApi = ({ api, deps = [], json = true, cache = false }) => {
+interface UseApiArgs {
+  api: string;
+  deps?: any[];
+  json?: boolean;
+  cache?: boolean;
+}
+
+const useApi = ({ api, deps = [], json = true, cache = false }: UseApiArgs) => {
   const [loading, setLoading] = useState(
     cache && readCache(api) !== null ? false : true
   );
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null | Error>(null);
   const [data, setData] = useState(cache ? readCache(api) : null);
 
   const loader = useMemo(() => {
@@ -35,7 +43,7 @@ const useApi = ({ api, deps = [], json = true, cache = false }) => {
         setData(result);
         setLoading(false);
       } catch (e) {
-        setError(e);
+        setError(e as Error);
         if (cache) {
           setCache(api, null);
         }

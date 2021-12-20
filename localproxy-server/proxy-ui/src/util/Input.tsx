@@ -1,13 +1,13 @@
-import React from "react";
+import React, { FC } from "react";
 
-const Input = ({
-  title,
-  value,
-  placeholder,
-  onChange,
-  checked,
-  type = "text",
-}) => {
+const Input: FC<{
+  title: string;
+  value: string;
+  placeholder?: string;
+  onChange: (value: string | boolean) => void;
+  checked?: boolean;
+  type: HTMLInputElement["type"];
+}> = ({ title, value, placeholder, onChange, checked, type = "text" }) => {
   return (
     <>
       <label>{title}</label>
