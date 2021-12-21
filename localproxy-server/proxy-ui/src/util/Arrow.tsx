@@ -1,4 +1,3 @@
-import React from "react";
 import styled from "styled-components";
 
 const ArrowWrapper = styled.span`
@@ -6,8 +5,6 @@ const ArrowWrapper = styled.span`
   margin: 0 4px;
 `;
 
-function Arrow() {
+export function Arrow() {
   return <ArrowWrapper>→</ArrowWrapper>;
 }
-
-export default Arrow;

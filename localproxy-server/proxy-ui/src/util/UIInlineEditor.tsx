@@ -18,6 +18,11 @@ const Editor = styled.input`
     outline: none;
     min-width: 130px;
   }
+
+  &[type="number"].no-content {
+    min-width: 20px;
+    text-align: right;
+  }
 `;
 
 export const UIInlineEditor: FC<{
@@ -25,7 +30,14 @@ export const UIInlineEditor: FC<{
   onChange: (value: string) => void;
   disabled?: boolean;
   placeholder?: string;
-}> = ({ disabled = false, value: initialValue, onChange, placeholder }) => {
+  type?: HTMLInputElement["type"];
+}> = ({
+  disabled = false,
+  value: initialValue,
+  onChange,
+  placeholder,
+  type = "text",
+}) => {
   const [val, setValue] = useState(initialValue);
   const ref = useRef<HTMLInputElement>(null);
 
@@ -37,16 +49,17 @@ export const UIInlineEditor: FC<{
     const input = ref.current;
     if (input) {
       input.style.width = "0";
-      input.style.width = input.scrollWidth + "px";
+      input.style.width =
+        input.scrollWidth + (type === "number" ? 12 : 0) + "px";
     }
-  }, [ref, val]);
+  }, [ref, val, type]);
 
   return (
     <Editor
       ref={ref}
       disabled={disabled}
       className={classNames({ "no-content": val === "" })}
-      type="text"
+      type={type}
       onChange={(event) => {
         event.stopPropagation();
         event.preventDefault();

@@ -1,7 +1,7 @@
-import React, { useState, useCallback } from "react";
+import { useState, useCallback } from "react";
 import styled from "styled-components";
 import classNames from "classnames";
-import useApi from "../util/useApi";
+import { useApi } from "../util/useApi";
 
 const SslSettingsWrapper = styled.div`
   display: grid;
@@ -72,7 +72,7 @@ const Trust = ({ editingEnabled }) => {
     }
   }, [trustValue]);
 
-  const { data: trustList } = useApi({
+  const { data: trustList } = useApi<string[]>({
     api: "/__proxy__/api/ssl/trust/list",
     deps: [trustResult],
   });
@@ -127,7 +127,7 @@ const Hostnames = ({ editingEnabled }) => {
     }
   }, [hostname]);
 
-  const { data: hostnames } = useApi({
+  const { data: hostnames } = useApi<string[]>({
     api: "/__proxy__/api/ssl/hostnames/list",
     deps: [addHostnameResult],
   });

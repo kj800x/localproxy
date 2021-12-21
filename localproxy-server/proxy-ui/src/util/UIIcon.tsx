@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { IconType } from "react-icons/lib";
 
-const UIIcon: FC<{
+export const UIIcon: FC<{
   Icon: IconType;
   color: string;
   iconColor: string;
@@ -23,5 +23,3 @@ const UIIcon: FC<{
     </span>
   );
 };
-
-export default UIIcon;

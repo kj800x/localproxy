@@ -2,6 +2,6 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import "react-tabs/style/react-tabs.css";
 import "loaders.css/loaders.css";
-import ReactApp from "./ReactApp";
+import { App } from "./App";
 
-ReactDOM.render(<ReactApp />, document.getElementById("root"));
+ReactDOM.render(<App />, document.getElementById("root"));

@@ -1,6 +1,6 @@
-import React, { FC } from "react";
+import { FC } from "react";
 
-const Input: FC<{
+export const Input: FC<{
   title: string;
   value: string;
   placeholder?: string;
@@ -23,5 +23,3 @@ const Input: FC<{
     </>
   );
 };
-
-export default Input;

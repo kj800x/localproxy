@@ -1,4 +1,4 @@
-import React, { CSSProperties, FC } from "react";
+import { CSSProperties, FC } from "react";
 import styled from "styled-components";
 
 interface Theme {
@@ -6,6 +6,7 @@ interface Theme {
   background: string;
   color: string;
 }
+
 const COLORS: { [key: string]: Theme } = {
   oz: {
     border: "#00bda5",
@@ -42,7 +43,7 @@ const COLORS: { [key: string]: Theme } = {
     background: "inherit",
     color: "#33475b",
   },
-  disabled: {
+  inactive: {
     color: "lightgrey",
     border: "inherit",
     background: "inherit",
@@ -51,13 +52,13 @@ const COLORS: { [key: string]: Theme } = {
 
 const getColor =
   (key: keyof Theme) =>
-  ({ color, disabled }: { color: keyof typeof COLORS; disabled: boolean }) => {
-    return COLORS[disabled ? "disabled" : color][key];
+  ({ color, inactive }: { color: keyof typeof COLORS; inactive: boolean }) => {
+    return COLORS[inactive ? "inactive" : color][key];
   };
 
 const TagWrapper = styled.div<{
   color: keyof typeof COLORS;
-  disabled: boolean;
+  inactive: boolean;
   fixedWidth: boolean;
   clickable: boolean;
 }>`
@@ -83,19 +84,19 @@ const TagWrapper = styled.div<{
 `;
 
 export const Tag: FC<{
-  color: keyof typeof COLORS;
-  hover: string;
-  fixedWidth: boolean;
-  enabled: boolean;
-  disabled: boolean;
-  onClick: () => void;
-  style: CSSProperties;
+  color?: keyof typeof COLORS;
+  hover?: string;
+  fixedWidth?: boolean;
+  active?: boolean;
+  disabled?: boolean;
+  onClick?: () => void;
+  style?: CSSProperties;
 }> = ({
   color = "default",
   children,
   hover,
   fixedWidth,
-  enabled = true,
+  active = true,
   disabled = false,
   onClick,
   style,
@@ -103,11 +104,11 @@ export const Tag: FC<{
   return (
     <TagWrapper
       color={color as string}
-      disabled={!(enabled === true)}
+      inactive={!(active === true)}
       fixedWidth={fixedWidth}
       clickable={!!onClick && !disabled}
       title={hover}
-      onClick={disabled ? () => {} : onClick || (() => {})}
+      onClick={(!disabled && onClick) || (() => {})}
       style={style}
     >
       <span>{children}</span>

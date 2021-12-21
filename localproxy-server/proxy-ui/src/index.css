@@ -33,46 +33,6 @@ header .icon {
   padding: 4px;
 }
 
-.content > .app {
-  border: 3px solid #5e6ab8;
-  border-radius: 6px;
-  margin: 12px 0;
-  padding: 8px;
-  background: #f0f1fa;
-}
-
-.content > .app.draft {
-  border: 3px dashed #5e6ab8;
-}
-
-.content > .app > h2,
-.modal > h2 {
-  color: #6a78d1 !important;
-  padding-bottom: 2px;
-  border-bottom: 1px solid #516f90;
-  margin-bottom: 12px;
-  display: flex;
-  justify-content: space-between;
-}
-
-.content > .app > h2 > .icon,
-.modal > h2 > .icon {
-  flex-shrink: 0;
-}
-
-.content > .app > h2 > a,
-.modal > h2 > a {
-  color: #6a78d1;
-  margin-right: 4px;
-}
-
-.content > .app > h2 > .app-icon,
-.modal > h2 > .app-icon {
-  display: flex;
-  flex: 1;
-  justify-content: flex-end;
-}
-
 .route {
   margin-top: 5px;
   display: flex;

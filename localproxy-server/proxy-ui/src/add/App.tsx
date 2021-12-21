@@ -1,8 +1,7 @@
-import React from "react";
 import { FaInfinity, FaTools, FaTrash } from "react-icons/fa";
-import UIIcon from "../util/UIIcon";
-import Route from "./Route";
-import Tag from "../util/Tag";
+import { UIIcon } from "../util/UIIcon";
+import { AddRoute } from "./AddRoute";
+import { Tag } from "../util/Tag";
 import styled from "styled-components";
 
 const RoutesGrid = styled.div`
@@ -41,7 +40,7 @@ const replaceElement = (arr, idx, elem) => {
   return copy;
 };
 
-function App({ app, refresh }) {
+export function App({ app, refresh }) {
   const deleteApp = () => {
     fetch("/__proxy__/api", {
       method: "DELETE",
@@ -99,7 +98,7 @@ function App({ app, refresh }) {
       </h2>
       <RoutesGrid>
         {app.routes.map((route, i) => (
-          <Route
+          <AddRoute
             key={route.route}
             route={route}
             updateRoute={(newRoute) => {
@@ -114,5 +113,3 @@ function App({ app, refresh }) {
     </div>
   );
 }
-
-export default App;

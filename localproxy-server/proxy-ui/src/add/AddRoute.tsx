@@ -1,8 +1,7 @@
-import React from "react";
 import styled from "styled-components";
 
-import Arrow from "../util/Arrow";
-import Tag from "../util/Tag";
+import { Arrow } from "../util/Arrow";
+import { Tag } from "../util/Tag";
 
 const RouteSettingsWrapper = styled.div`
   display: flex;
@@ -32,7 +31,7 @@ const PriorityWrapper = styled.div`
   text-align: right;
 `;
 
-function RouteMapping({ route, updateRoute }) {
+export function RouteMapping({ route, updateRoute }) {
   const urlHostname = new URL(window.location.href).hostname;
   const isLocal = urlHostname === "localhost" || urlHostname === "127.0.0.1";
   if (route.static) {
@@ -59,7 +58,7 @@ function RouteMapping({ route, updateRoute }) {
         <RouteSettingsWrapper>
           <Tag
             disabled={!isLocal}
-            enabled={route.rootIndexFallback === true}
+            active={route.rootIndexFallback === true}
             hover="Root Index Fallback - If the file isn't found, serve the root /index.html (for single page apps)"
             onClick={() => {
               updateRoute({
@@ -72,7 +71,7 @@ function RouteMapping({ route, updateRoute }) {
           </Tag>
           <Tag
             disabled={!isLocal}
-            enabled={route.dirListings === true}
+            active={route.dirListings === true}
             hover="Serve directory listings if the index.html isn't found"
             onClick={() => {
               updateRoute({ ...route, dirListings: !route.dirListings });
@@ -117,7 +116,7 @@ function RouteMapping({ route, updateRoute }) {
       <RouteSettingsWrapper>
         <Tag
           disabled={!isLocal}
-          enabled={route.trimRoute === true}
+          active={route.trimRoute === true}
           hover="Trim the matched route before proxying the request"
           onClick={() => {
             updateRoute({ ...route, trimRoute: !route.trimRoute });
