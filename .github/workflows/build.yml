@@ -9,22 +9,42 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Setup Node 12
+
+      - name: Setup node 12
         uses: actions/setup-node@v2
         with:
           node-version: "12"
-      - name: Install Build Requirements
+
+      - name: Install build requirements
         run: sudo apt update;
           sudo apt -y upgrade;
           sudo apt install build-essential;
-      - name: Debian Build
+
+      - name: Debian amd64 build
         working-directory: ${{github.workspace}}/localproxy-server
+        env:
+          ARCH: amd64
         run: bash build-deb.sh;
-      - name: Upload Ubuntu Artifacts
+
+      - name: Debian armhf build
+        working-directory: ${{github.workspace}}/localproxy-server
+        env:
+          ARCH: armhf
+          ADDITIONAL_BUILD: true
+        run: bash build-deb.sh;
+
+      - name: Debian arm64 build
+        working-directory: ${{github.workspace}}/localproxy-server
+        env:
+          ARCH: arm64
+          ADDITIONAL_BUILD: true
+        run: bash build-deb.sh;
+
+      - name: Upload Ubuntu artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: localproxy_amd64
-          path: ${{github.workspace}}/localproxy-server/build/*
+          name: localproxy_linux
+          path: ${{github.workspace}}/localproxy-server/build/deb.*
 
       # --- Prep a release for tags ---
       - name: Prepare release
@@ -32,6 +52,6 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           prerelease: true
-          files: ${{github.workspace}}/build/packages/*
+          files: ${{github.workspace}}/localproxy-server/build/deb.*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

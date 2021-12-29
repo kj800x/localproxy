@@ -26,29 +26,33 @@ if [ "$ARCH" = "arm64" ]
 fi
 
 # Nuke the last run if it still exists
-rm -rf build
+rm -rf build/workspace
 
 # Ensure that the working directory is ready
-npm i
-cd proxy-ui
-npm i
-npm run build
-cd ..
+if [ -z "$ADDITIONAL_BUILD" ]
+then npm i
+  cd proxy-ui
+  npm i
+  npm run build
+  cd ..
+fi
 
 # Set up the structure for the deb file
-mkdir -p build/localproxy_${VERSION}_${ARCH}
-cd build/localproxy_${VERSION}_${ARCH}
+mkdir -p build/workspace/localproxy_${VERSION}_${ARCH}
+cd build/workspace/localproxy_${VERSION}_${ARCH}
 
 # Fetch nodejs binary
-npm install -g n
+if [ -z "$ADDITIONAL_BUILD" ]
+then npm install -g n
+fi
 N_PREFIX=./n-tmp n --arch ${N_ARCH} 12.3.1
 
 # Copy localproxy nodejs code, built site, mkcert, and a nodejs runtime
 mkdir -p usr/local/share/localproxy/proxy-ui
-cp -r ../../*js usr/local/share/localproxy
-cp -r ../../node_modules usr/local/share/localproxy
+cp -r ../../../*js usr/local/share/localproxy
+cp -r ../../../node_modules usr/local/share/localproxy
 echo ${VERSION} > usr/local/share/localproxy/version.txt
-cp -r ../../proxy-ui/build usr/local/share/localproxy/proxy-ui
+cp -r ../../../proxy-ui/build usr/local/share/localproxy/proxy-ui
 cp `N_PREFIX=./n-tmp n which 12.3.1` usr/local/share/localproxy/node
 wget https://github.com/FiloSottile/mkcert/releases/download/v1.4.2/mkcert-v1.4.2-linux-${MKCERT_ARCH} -O usr/local/share/localproxy/mkcert
 chmod +x usr/local/share/localproxy/mkcert
@@ -176,3 +180,4 @@ chmod +x DEBIAN/postrm
 # Build the deb file
 cd ..
 dpkg-deb --build --root-owner-group localproxy_${VERSION}_${ARCH}
+cp localproxy_${VERSION}_${ARCH}.deb ..

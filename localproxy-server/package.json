@@ -5,8 +5,9 @@
   "description": "An API to dynamically configure nginx for static and reverse proxy routes",
   "scripts": {
     "start": "sudo -u localproxy /home/kevin/.nvm/versions/node/v12.3.1/bin/node server.js",
-    "build-deb": "bash build-deb.sh",
-    "install-deb": "sudo dpkg -i build/*deb"
+    "build": "bash build-deb.sh",
+    "deb-install": "sudo dpkg -i build/*deb",
+    "clean": "rm -rf build"
   },
   "author": "Kevin Johnson <kevin@kj800x.com>",
   "repository": {
