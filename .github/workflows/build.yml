@@ -44,7 +44,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: localproxy_linux
-          path: ${{github.workspace}}/localproxy-server/build/deb.*
+          path: ${{github.workspace}}/localproxy-server/build/*.deb
 
       # --- Prep a release for tags ---
       - name: Prepare release
@@ -52,6 +52,6 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           prerelease: true
-          files: ${{github.workspace}}/localproxy-server/build/deb.*
+          files: ${{github.workspace}}/localproxy-server/build/*.deb
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
