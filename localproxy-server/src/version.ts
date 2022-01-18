@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 
-const VERSION_FILE = path.join(__dirname, "version.txt");
+const VERSION_FILE = path.join(__dirname, "..", "version.txt");
 let cachedVersion: string;
 
 export function getVersion() {

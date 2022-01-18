@@ -122,19 +122,19 @@ const template = (routes: LocalproxyRouteWithApp[], config: LocalproxyConfig) =>
 
     error_page 403 /403.html;
     location = /403.html {
-      root ${PROXY_UI_BUILD_FOLDER}/;
+      root ${PROXY_UI_BUILD_FOLDER};
       internal;
     }
 
     error_page 404 /404.html;
     location = /404.html {
-      root ${PROXY_UI_BUILD_FOLDER}/;
+      root ${PROXY_UI_BUILD_FOLDER};
       internal;
     }
 
     error_page 500 502 503 504 /50x.html;
     location = /50x.html {
-      root ${PROXY_UI_BUILD_FOLDER}/;
+      root ${PROXY_UI_BUILD_FOLDER};
       internal;
     }
 
