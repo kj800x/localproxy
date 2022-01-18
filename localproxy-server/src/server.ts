@@ -1,13 +1,15 @@
 #!/usr/local/share/localproxy/node
 
-const http = require("http");
-const WebSocket = require("ws");
-const os = require("os");
+import http from "http";
+import WebSocket from "ws";
+import os from "os";
+import path from "path";
 
-const store = require("./store");
-const { trust, getCert, addHost, listTrust, listHosts } = require("./ssl");
-const { getBody } = require("./util");
-const { getVersion } = require("./version");
+import * as store from "./store";
+import { trust, getCert, addHost, listTrust, listHosts } from "./ssl";
+import { getBody, PROXY_UI_BUILD_FOLDER } from "./util";
+import { getVersion } from "./version";
+import { AddressInfo } from "net";
 
 store.startup();
 
@@ -23,7 +25,7 @@ store.onSync((apps) => {
 });
 
 server.on("listening", () => {
-  const port = server.address().port;
+  const port = (server.address() as AddressInfo).port;
   console.log(`Using http://127.0.0.1:${port} as the configuration server`);
   store.register({
     id: "localproxy system routes",
@@ -33,9 +35,11 @@ server.on("listening", () => {
       {
         static: true,
         route: "/__proxy__",
-        staticDir: __dirname + "/proxy-ui/build/",
+        staticDir: PROXY_UI_BUILD_FOLDER,
         priority: 9998,
         type: "ui",
+        rootIndexFallback: false,
+        dirListings: false,
       },
       {
         static: false,
@@ -49,9 +53,11 @@ server.on("listening", () => {
       {
         static: true,
         route: "/",
-        staticDir: __dirname + "/proxy-ui/build/",
+        staticDir: PROXY_UI_BUILD_FOLDER,
         priority: -1,
         type: "ui",
+        rootIndexFallback: false,
+        dirListings: false,
       },
     ],
   });
@@ -74,31 +80,31 @@ server.on("request", async (req, res) => {
         store.deregister(payload.id);
       }
       res.end();
-    } else if (req.url.includes("/version")) {
+    } else if (req.url!.includes("/version")) {
       res.write(getVersion());
       res.end();
-    } else if (req.url.includes("/ssl/trust/list")) {
+    } else if (req.url!.includes("/ssl/trust/list")) {
       res.write(JSON.stringify(await listTrust()));
       res.end();
-    } else if (req.url.includes("/ssl/trust")) {
+    } else if (req.url!.includes("/ssl/trust")) {
       const body = await getBody(req);
       const payload = JSON.parse(body);
       await trust(payload.hostname);
       res.write("OK");
       res.end();
-    } else if (req.url.includes("/ssl/hostnames/list")) {
+    } else if (req.url!.includes("/ssl/hostnames/list")) {
       res.write(JSON.stringify(await listHosts()));
       res.end();
-    } else if (req.url.includes("/ssl/add-hostname")) {
+    } else if (req.url!.includes("/ssl/add-hostname")) {
       const body = await getBody(req);
       const payload = JSON.parse(body);
       await addHost(payload.hostname);
       res.write("OK");
       res.end();
-    } else if (req.url.includes("/ssl/cert")) {
+    } else if (req.url!.includes("/ssl/cert")) {
       res.write(await getCert());
       res.end();
-    } else if (req.url.includes("/hostname")) {
+    } else if (req.url!.includes("/hostname")) {
       res.write(os.hostname());
       res.end();
     } else {

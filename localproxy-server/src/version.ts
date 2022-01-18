@@ -1,10 +1,10 @@
-const fs = require("fs");
-const path = require("path");
+import fs from "fs";
+import path from "path";
 
 const VERSION_FILE = path.join(__dirname, "version.txt");
-let cachedVersion;
+let cachedVersion: string;
 
-function getVersion() {
+export function getVersion() {
   if (!cachedVersion) {
     if (fs.existsSync(VERSION_FILE)) {
       cachedVersion = fs.readFileSync(VERSION_FILE, "utf8");
@@ -14,7 +14,3 @@ function getVersion() {
   }
   return cachedVersion;
 }
-
-module.exports = {
-  getVersion,
-};

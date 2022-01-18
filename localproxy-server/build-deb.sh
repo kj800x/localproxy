@@ -49,7 +49,7 @@ N_PREFIX=./n-tmp n --arch ${N_ARCH} 12.3.1
 
 # Copy localproxy nodejs code, built site, mkcert, and a nodejs runtime
 mkdir -p usr/local/share/localproxy/proxy-ui
-cp -r ../../../*js usr/local/share/localproxy
+cp -r ../../../lib usr/local/share/localproxy
 cp -r ../../../node_modules usr/local/share/localproxy
 echo ${VERSION} > usr/local/share/localproxy/version.txt
 cp -r ../../../proxy-ui/build usr/local/share/localproxy/proxy-ui
@@ -99,13 +99,15 @@ Description=localproxy server
 
 [Service]
 User=localproxy
-ExecStart=/usr/local/share/localproxy/node /usr/local/share/localproxy/server.js
+ExecStart=/usr/local/share/localproxy/node /usr/local/share/localproxy/lib/server.js
 Restart=always
 RestartSec=5
 
 [Install]
 WantedBy=multi-user.target
 $HERE
+
+export INSTALLED_SIZE="$(du . -s -c | awk 'function ceil(x, y){y=int(x); return(x>y?y+1:y)}NR==1{ print ceil($1/1024) }')"
 
 # Deb stuff
 mkdir DEBIAN
@@ -115,6 +117,7 @@ Version: ${VERSION}
 Section: base
 Priority: optional
 Architecture: ${ARCH}
+Installed-Size: ${INSTALLED_SIZE}
 Depends: nginx (>= 1.14.0), libnss3-tools
 Maintainer: Kevin Johnson <kevin@kj800x.com>
 Description: localproxy

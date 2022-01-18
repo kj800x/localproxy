@@ -1,25 +1,27 @@
-const fs = require("fs");
-const { getBody } = require("./util");
-const mkdirp = require("mkdirp");
-const execa = require("execa");
-const http = require("http");
-const { reload } = require("./nginx");
-const util = require("util");
+import fs from "fs";
+import { getBody } from "./util";
+import mkdirp from "mkdirp";
+import execa from "execa";
+import http from "http";
+import { reload } from "./nginx";
+import util from "util";
 const rimraf = util.promisify(require("rimraf"));
 
-async function listHosts() {
+export async function listHosts() {
   return fs
     .readFileSync("/etc/localproxy/hosts", "utf8")
     .split("\n")
     .filter(Boolean);
 }
 
-async function addHost(hostname) {
+export async function addHost(hostname: string) {
   const hosts = fs
     .readFileSync("/etc/localproxy/hosts", "utf8")
     .split("\n")
     .filter(Boolean);
+
   hosts.push(hostname);
+
   fs.writeFileSync("/etc/localproxy/hosts", hosts.join("\n") + "\n");
 
   await execa(
@@ -39,14 +41,14 @@ async function addHost(hostname) {
   reload();
 }
 
-async function getCert() {
+export async function getCert() {
   return fs.readFileSync("/etc/localproxy/ca-root/rootCA.pem", "utf8");
 }
 
-async function listTrust() {
+export async function listTrust() {
   const files = fs.readdirSync("/etc/ssl/certs");
   const mkCerts = files.filter((file) => file.startsWith("mkcert"));
-  const certSubjects = [];
+  const certSubjects: string[] = [];
   for (const cert of mkCerts) {
     const { stdout } = await execa("openssl", [
       "x509",
@@ -60,8 +62,8 @@ async function listTrust() {
   return certSubjects;
 }
 
-async function trust(server) {
-  return new Promise((acc, rej) => {
+export async function trust(server: string) {
+  return new Promise<void>((resolve, reject) => {
     http.get(`http://${server}/__proxy__/api/ssl/cert`, async (res) => {
       try {
         const cert = await getBody(res);
@@ -72,18 +74,10 @@ async function trust(server) {
           "/usr/bin/mkcert-install",
         ]);
         await rimraf("/tmp/remote-cert-install");
-        acc();
+        resolve();
       } catch (e) {
-        rej(e);
+        reject(e);
       }
     });
   });
 }
-
-module.exports = {
-  trust,
-  listTrust,
-  getCert,
-  addHost,
-  listHosts,
-};

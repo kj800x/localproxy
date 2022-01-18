@@ -1,17 +1,16 @@
-const fs = require("fs");
-const path = require("path");
-const rimraf = require("rimraf");
-const nginx = require("./nginx");
-const psList = require("ps-list");
+import fs from "fs";
+import path from "path";
+import * as nginx from "./nginx";
+import psList, { ProcessDescriptor } from "ps-list";
+import { sanitize } from "./util";
+import { LocalproxyApp } from "./types";
 
 const WATCH_DIR = "/etc/localproxy/sites";
 
-let apps = {};
-let onSyncHandler = () => {};
+let apps: { [id: string]: LocalproxyApp } = {};
+let onSyncHandler: (apps: LocalproxyApp[]) => void = () => {};
 
-const sanitize = (s) => s.replace(/[^a-z0-9-]/gi, "-");
-
-const forceSync = () => {
+export const forceSync = () => {
   const files = fs.readdirSync(WATCH_DIR);
   apps = {};
   for (const file of files) {
@@ -26,7 +25,7 @@ const forceSync = () => {
   nginx.sync(getApps());
 };
 
-const startup = () => {
+export const startup = () => {
   const files = fs.readdirSync(WATCH_DIR);
   for (const file of files) {
     try {
@@ -47,16 +46,18 @@ const startup = () => {
   fs.watch(WATCH_DIR, forceSync);
 };
 
-const getApps = () => Object.values(apps);
+export function getApps() {
+  return Object.values(apps);
+}
 
-function register(payload) {
+export function register(payload: LocalproxyApp) {
   const file = `${sanitize(payload.id)}.json`;
   fs.writeFileSync(path.join(WATCH_DIR, file), JSON.stringify(payload));
   fs.chmodSync(path.join(WATCH_DIR, file), "0664");
   forceSync();
 }
 
-function deregister(id) {
+export function deregister(id: string) {
   const file = `${sanitize(id)}.json`;
   if (fs.existsSync(path.join(WATCH_DIR, file))) {
     fs.unlinkSync(path.join(WATCH_DIR, file));
@@ -66,7 +67,7 @@ function deregister(id) {
   forceSync();
 }
 
-const isProcessRunning = (pid, listOfPs) => {
+const isProcessRunning = (pid: number, listOfPs: ProcessDescriptor[]) => {
   return !!listOfPs.find((ps) => ps.pid === pid);
 };
 
@@ -83,11 +84,15 @@ const pruneDeadApps = async () => {
 
 setInterval(pruneDeadApps, 1000);
 
+export function onSync(fn: (apps: LocalproxyApp[]) => void) {
+  return (onSyncHandler = fn);
+}
+
 module.exports = {
   startup,
   forceSync,
   register,
   deregister,
   getApps,
-  onSync: (fn) => (onSyncHandler = fn),
+  onSync,
 };

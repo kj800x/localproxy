@@ -1,22 +1,29 @@
-const fs = require("fs");
-const { execSync } = require("child_process");
-const nginxBeautifier = require("nginxbeautifier/nginxbeautifier");
-const { readConfig } = require("./config");
+import fs from "fs";
+import { execSync } from "child_process";
+// @ts-expect-error nginxbeautifier is untyped
+import nginxBeautifier from "nginxbeautifier/nginxbeautifier";
+import { LocalproxyConfig, readConfig } from "./config";
+import { LocalproxyApp, LocalproxyRoute } from "./types";
+import { PROXY_UI_BUILD_FOLDER } from "./util";
 
-const pipeSingle = (a, b) => (arg) => b(a(arg));
-const pipe = (...ops) => ops.reduce(pipeSingle);
+type LocalproxyRouteWithApp = LocalproxyRoute & { app: LocalproxyApp };
 
-const format = pipe(
+function pipeSingle<A, B, C>(a: (arg1: A) => B, b: (arg1: B) => C) {
+  return (arg: A) => b(a(arg));
+}
+const pipe = (...ops: ((arg: any) => any)[]) => ops.reduce(pipeSingle);
+
+const format: (contents: string) => string = pipe(
   nginxBeautifier.clean_lines,
-  (lines) => lines.map((line) => line.trim()),
-  (lines) => lines.filter((line) => line),
+  (lines: string[]) => lines.map((line) => line.trim()),
+  (lines: string[]) => lines.filter((line) => line),
   nginxBeautifier.join_opening_bracket,
   nginxBeautifier.perform_indentation,
   // nginxBeautifier.perform_alignment,
   (lines) => lines.join("\n") + "\n"
 );
 
-const getAllowDeny = (restrictAccess) =>
+const getAllowDeny = (restrictAccess: boolean | undefined) =>
   restrictAccess
     ? `
         limit_except GET {
@@ -27,15 +34,15 @@ const getAllowDeny = (restrictAccess) =>
       `
     : "";
 
-const getTryFiles = (route) =>
-  route.rootIndexFallback
+const getTryFiles = (route: LocalproxyRoute) =>
+  "rootIndexFallback" in route && route.rootIndexFallback
     ? `
         try_files $uri $uri/ ${route.route}/index.html;
       `
     : "";
 
-const getAutoIndex = (route) =>
-  route.dirListings
+const getAutoIndex = (route: LocalproxyRoute) =>
+  "dirListings" in route && route.dirListings
     ? `
         autoindex on;
       `
@@ -43,7 +50,7 @@ const getAutoIndex = (route) =>
 
 // https://serverfault.com/questions/562756/how-to-remove-the-path-with-an-nginx-proxy-pass
 // https://stackoverflow.com/questions/10631933/nginx-static-file-serving-confusion-with-root-alias
-const getRouteBody = (route) => {
+const getRouteBody = (route: LocalproxyRouteWithApp) => {
   if (route.static) {
     return `
       alias "${route.staticDir}";
@@ -66,7 +73,7 @@ const getRouteBody = (route) => {
   }
 };
 
-const renderRoute = (route) => {
+const renderRoute = (route: LocalproxyRouteWithApp) => {
   const locationKey = route.route; // ? route.route : `~ ${route.regex}`; TODO regex disabled for now
   const body = getRouteBody(route);
 
@@ -77,7 +84,7 @@ const renderRoute = (route) => {
   `;
 };
 
-function renderSslBlock(config) {
+function renderSslBlock(config: LocalproxyConfig) {
   if (!config || !config.ssl || config.ssl === "enabled") {
     return `
       listen 443 ssl http2;
@@ -98,7 +105,7 @@ function renderSslBlock(config) {
   throw new Error(`Unexpected config.ssl value: ${config.ssl}`);
 }
 
-const template = (routes, config) =>
+const template = (routes: LocalproxyRouteWithApp[], config: LocalproxyConfig) =>
   format(`
   log_format scripts '$document_root | $uri | > $request';
   client_max_body_size 20M;
@@ -115,19 +122,19 @@ const template = (routes, config) =>
 
     error_page 403 /403.html;
     location = /403.html {
-      root ${__dirname}/proxy-ui/build/;
+      root ${PROXY_UI_BUILD_FOLDER}/;
       internal;
     }
 
     error_page 404 /404.html;
     location = /404.html {
-      root ${__dirname}/proxy-ui/build/;
+      root ${PROXY_UI_BUILD_FOLDER}/;
       internal;
     }
 
     error_page 500 502 503 504 /50x.html;
     location = /50x.html {
-      root ${__dirname}/proxy-ui/build/;
+      root ${PROXY_UI_BUILD_FOLDER}/;
       internal;
     }
 
@@ -140,8 +147,8 @@ const template = (routes, config) =>
   }
 `);
 
-const buildFinalRoutes = (apps) => {
-  const routes = {};
+const buildFinalRoutes = (apps: LocalproxyApp[]): LocalproxyRouteWithApp[] => {
+  const routes: { [key: string]: LocalproxyRouteWithApp } = {};
 
   apps.forEach((app) => {
     app.routes.forEach((route) => {
@@ -157,7 +164,7 @@ const buildFinalRoutes = (apps) => {
   return Object.values(routes);
 };
 
-function write(apps) {
+function write(apps: LocalproxyApp[]) {
   const config = readConfig();
 
   const routes = buildFinalRoutes(apps);
@@ -166,16 +173,11 @@ function write(apps) {
   fs.writeFileSync("/etc/nginx/conf.d/localproxy.conf", content);
 }
 
-function reload() {
+export function reload() {
   execSync("sudo reload-nginx");
 }
 
-function sync(apps) {
+export function sync(apps: LocalproxyApp[]) {
   write(apps);
   reload();
 }
-
-module.exports = {
-  sync,
-  reload,
-};
