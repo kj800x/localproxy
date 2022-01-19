@@ -1,6 +1,6 @@
 {
   "name": "@kj800x/localproxy-react-scripts",
-  "version": "0.3.4",
+  "version": "0.3.5",
   "description": "React-scripts package for automatically mounting localproxy apps when running the dev server",
   "bin": "localproxy-react-scripts.js",
   "author": "Kevin Johnson <kevin@kj800x.com>",
