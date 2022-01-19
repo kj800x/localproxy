@@ -4,6 +4,7 @@ const localproxy = require("@kj800x/localproxy-client");
 const process = require("process");
 const execa = require("execa");
 const path = require("path");
+const { generateBuildInfo } = require("./generate-build-info");
 
 const CWD = process.cwd();
 const reactScriptsBin = require.resolve(".bin/react-scripts", { paths: [CWD] });
@@ -116,6 +117,16 @@ async function runBuild() {
     console.error("react-scripts build had unexpected error", e);
   } finally {
     await execa("sed", ["-i", "s/homepage/##homepage/g", "package.json"]);
+  }
+
+  try {
+    await generateBuildInfo();
+  } catch (e) {
+    console.error(
+      "localproxy-react-scripts failed to generate build-info.json",
+      e
+    );
+    console.warn("this is a non-fatal error");
   }
 }
 
