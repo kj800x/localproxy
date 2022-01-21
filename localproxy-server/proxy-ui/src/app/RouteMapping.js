@@ -1,12 +1,19 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { FaInfo } from "react-icons/fa";
 import styled from "styled-components";
 
 import Arrow from "../util/Arrow";
 import Tag from "../util/Tag";
+import UIIcon from "../util/UIIcon";
 
 const RouteSettingsWrapper = styled.div`
   display: flex;
   justify-content: flex-end;
+  align-items: center;
+
+  a {
+    margin-right: 4px;
+  }
 `;
 
 const OverflowWrap = styled.span`
@@ -29,9 +36,61 @@ const colorByType = (type) => {
   }
 };
 
+const useBuildInfo = (route) => {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    async function loader() {
+      if (!route.static) {
+        return;
+      }
+
+      const buildInfoPath = `${route.route}/build-info.json`;
+
+      setData(null);
+      setError(null);
+      setLoading(true);
+      const headResponse = await fetch(buildInfoPath, {
+        method: "HEAD",
+      });
+
+      console.log(headResponse.headers);
+
+      if (
+        headResponse.status !== 200 ||
+        headResponse.headers.get("content-type") !== "application/json"
+      ) {
+        setLoading(false);
+        setError(new Error("No response for build-info.json file"));
+        return;
+      }
+
+      const getResponse = await fetch(buildInfoPath, {
+        method: "GET",
+      });
+
+      const buildInfo = await getResponse.json();
+
+      setData(buildInfo);
+      setLoading(false);
+    }
+
+    loader();
+  }, [route]);
+
+  return { data, loading, error };
+};
+
 function RouteMapping({ route, updateRoute }) {
   const urlHostname = new URL(window.location.href).hostname;
   const isLocal = urlHostname === "localhost" || urlHostname === "127.0.0.1";
+
+  const buildInfo = useBuildInfo(route);
+
+  console.log(buildInfo);
+
   if (route.static) {
     return (
       <>
@@ -54,6 +113,16 @@ function RouteMapping({ route, updateRoute }) {
         <Arrow />
         <OverflowWrap>{route.staticDir}</OverflowWrap>
         <RouteSettingsWrapper>
+          {buildInfo.data ? (
+            <a href={`${route.route}/build-info.json`}>
+              <UIIcon
+                title="Build Info Available"
+                iconColor="#e5f5f8"
+                color="#00a38d"
+                Icon={FaInfo}
+              />
+            </a>
+          ) : null}
           <Tag
             disabled={!isLocal}
             enabled={route.rootIndexFallback === true}
