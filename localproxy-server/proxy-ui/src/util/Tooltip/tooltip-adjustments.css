@@ -1,0 +1,23 @@
+.rc-tooltip {
+  opacity: 0.95 !important;
+  max-width: 400px;
+}
+
+.rc-tooltip-content,
+.rc-tooltip-arrow {
+  margin-top: -6px !important;
+}
+
+.rc-tooltip-inner {
+  border: 1px solid #2d3e50;
+  background: #eaecf0 !important;
+  color: #33475b !important;
+
+  padding: 2px 4px !important;
+}
+
+.rc-tooltip-placement-bottom .rc-tooltip-arrow,
+.rc-tooltip-placement-bottomLeft .rc-tooltip-arrow,
+.rc-tooltip-placement-bottomRight .rc-tooltip-arrow {
+  border-bottom-color: #2d3e50 !important;
+}

@@ -4,14 +4,16 @@ import styled from "styled-components";
 
 import Arrow from "../util/Arrow";
 import Tag from "../util/Tag";
+import { Tooltip } from "../util/Tooltip";
 import UIIcon from "../util/UIIcon";
+import TimeAgo from "react-timeago";
 
 const RouteSettingsWrapper = styled.div`
   display: flex;
   justify-content: flex-end;
   align-items: center;
 
-  a {
+  .icon {
     margin-right: 4px;
   }
 `;
@@ -83,6 +85,52 @@ const useBuildInfo = (route) => {
   return { data, loading, error };
 };
 
+const BuildInfoTooltipRoot = styled.div`
+  p {
+    margin: 0;
+  }
+`;
+
+function BuildInfoTooltip({ buildInfo, route }) {
+  return (
+    <BuildInfoTooltipRoot>
+      <p>
+        Built by <b>{buildInfo.build.user}</b>{" "}
+        <TimeAgo
+          date={buildInfo.build.timestamp}
+          title={new Date(buildInfo.build.timestamp).toLocaleString()}
+        />{" "}
+        on <b>{buildInfo.build.host}</b>{" "}
+      </p>
+      <br />
+      <p>
+        commit <b>{buildInfo.commit.commitHash}</b>
+      </p>
+      {buildInfo.commit.dirty ? (
+        <p>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>working tree dirty</i>
+        </p>
+      ) : null}
+      <p>
+        author: <b>{buildInfo.commit.authorName}</b> &lt;
+        <b>{buildInfo.commit.authorEmail}</b>
+        &gt;
+      </p>
+      <p>
+        date:{" "}
+        <TimeAgo
+          date={buildInfo.commit.commitTimestamp}
+          title={new Date(buildInfo.commit.commitTimestamp).toLocaleString()}
+        />
+      </p>
+      <blockquote>{buildInfo.commit.commitMessage}</blockquote>
+      <p>
+        <a href={`${route.route}/build-info.json`}>raw build info</a>
+      </p>
+    </BuildInfoTooltipRoot>
+  );
+}
+
 function RouteMapping({ route, updateRoute }) {
   const urlHostname = new URL(window.location.href).hostname;
   const isLocal = urlHostname === "localhost" || urlHostname === "127.0.0.1";
@@ -114,14 +162,18 @@ function RouteMapping({ route, updateRoute }) {
         <OverflowWrap>{route.staticDir}</OverflowWrap>
         <RouteSettingsWrapper>
           {buildInfo.data ? (
-            <a href={`${route.route}/build-info.json`}>
+            <Tooltip
+              overlay={
+                <BuildInfoTooltip buildInfo={buildInfo.data} route={route} />
+              }
+            >
               <UIIcon
                 title="Build Info Available"
                 iconColor="#e5f5f8"
-                color="#00a38d"
+                color="#6a78d1"
                 Icon={FaInfo}
               />
-            </a>
+            </Tooltip>
           ) : null}
           <Tag
             disabled={!isLocal}
