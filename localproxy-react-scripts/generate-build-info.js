@@ -2,6 +2,10 @@ const execa = require("execa");
 const fs = require("fs");
 
 async function getGitDescribe() {
+  await execa("git", ["update-index", "--refresh"], {
+    reject: false,
+  });
+
   const { stdout } = await execa(
     "git",
     ["describe", "--long", "--always", "--dirty", "--broken"],
