@@ -54,6 +54,7 @@ const getRouteBody = (route: LocalproxyRouteWithApp) => {
   if (route.static) {
     return `
       alias "${route.staticDir}";
+      add_header 'Access-Control-Allow-Origin' '*' always;
       ${getAllowDeny(route.app.system)}
       ${getTryFiles(route)}
       ${getAutoIndex(route)}
