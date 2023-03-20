@@ -27,7 +27,7 @@ let tmpFileCleanups: { [key: string]: () => void } = {};
 let standalone: StandaloneServer | null = null;
 
 export async function register(app: LocalproxyApp): Promise<void> {
-  if (!useStandalone()) {
+  if (useStandalone()) {
     if (!standalone) {
       standalone = new StandaloneServer(
         await getAvailablePortFromList([80, 8080])
