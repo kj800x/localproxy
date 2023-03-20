@@ -20,7 +20,7 @@ export class StandaloneServer {
       "⚠️  Creating localproxy standalone server. Consider installing the OS installed localproxy server instead"
     );
     const server = http.createServer(this.requestListener);
-    server.listen(port, "localhost", () => {
+    server.listen(port, () => {
       console.log(`Standalone server is running on http://localhost:${port}`);
     });
   }
