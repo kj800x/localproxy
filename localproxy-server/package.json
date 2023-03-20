@@ -1,7 +1,7 @@
 {
   "name": "@kj800x/localproxy-server",
   "private": true,
-  "version": "0.3.9",
+  "version": "0.3.10",
   "description": "An API to dynamically configure nginx for static and reverse proxy routes",
   "scripts": {
     "prepare": "npm run build",
