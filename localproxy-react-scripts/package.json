@@ -1,6 +1,6 @@
 {
   "name": "@kj800x/localproxy-react-scripts",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "React-scripts package for automatically mounting localproxy apps when running the dev server",
   "bin": "localproxy-react-scripts.js",
   "author": "Kevin Johnson <kevin@kj800x.com>",
@@ -10,7 +10,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@kj800x/localproxy-client": "0.4.0",
+    "@kj800x/localproxy-client": "0.4.1",
     "execa": "^2.0.4"
   },
   "peerDependencies": {
