@@ -1,6 +1,8 @@
 import React from "react";
 
-function UIIcon({ Icon, title, color, onClick, iconColor }) {
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+function UIIcon({ icon, title, color, onClick, iconColor }) {
   return (
     <span
       className="icon"
@@ -12,7 +14,7 @@ function UIIcon({ Icon, title, color, onClick, iconColor }) {
       onClick={onClick}
       role={onClick ? "button" : undefined}
     >
-      <Icon size=".6em" color={iconColor} />
+      <FontAwesomeIcon icon={icon} fontSize="0.6em" color={iconColor} />
     </span>
   );
 }

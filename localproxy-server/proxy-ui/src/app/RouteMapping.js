@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { FaInfo } from "react-icons/fa";
 import styled from "styled-components";
 
 import Arrow from "../util/Arrow";
@@ -7,6 +6,7 @@ import Tag from "../util/Tag";
 import { Tooltip } from "../util/Tooltip";
 import UIIcon from "../util/UIIcon";
 import TimeAgo from "react-timeago";
+import { faInfo } from "@fortawesome/free-solid-svg-icons";
 
 const RouteSettingsWrapper = styled.div`
   display: flex;
@@ -53,14 +53,21 @@ const useBuildInfo = (route) => {
         return;
       }
 
-      const buildInfoPath = `${route.route}/build-info.json`;
+      const buildInfoPath = `${route.route}${
+        route.route.endsWith("/") ? "" : "/"
+      }build-info.json`;
 
       setData(null);
       setError(null);
       setLoading(true);
       const headResponse = await fetch(buildInfoPath, {
         method: "HEAD",
-      });
+      }).catch(() => null);
+
+      if (!headResponse) {
+        setLoading(false);
+        return;
+      }
 
       if (
         headResponse.status !== 200 ||
@@ -174,7 +181,7 @@ function RouteMapping({ route, updateRoute }) {
                 title="Build Info Available"
                 iconColor="#e5f5f8"
                 color="#6a78d1"
-                Icon={FaInfo}
+                icon={faInfo}
               />
             </Tooltip>
           ) : null}

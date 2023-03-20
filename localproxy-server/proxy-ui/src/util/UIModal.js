@@ -1,6 +1,6 @@
 import React from "react";
-import { MdClose } from "react-icons/md";
 import UIIcon from "./UIIcon";
+import { faClose } from "@fortawesome/free-solid-svg-icons";
 
 function UIModal({ children, close, title }) {
   return (
@@ -10,7 +10,7 @@ function UIModal({ children, close, title }) {
         <UIIcon
           color="#d94c53"
           iconColor="#2d3e50"
-          Icon={MdClose}
+          icon={faClose}
           onClick={close}
         />
       </h3>

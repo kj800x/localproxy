@@ -1,10 +1,14 @@
 import React from "react";
-import { FaInfinity, FaTools, FaTrash } from "react-icons/fa";
 import UIIcon from "../util/UIIcon";
 import Route from "./Route";
 import Tag from "../util/Tag";
 import styled from "styled-components";
 import { ArrowContainer, ReflowContainer, StyledArrow } from "./RouteMapping";
+import {
+  faInfinity,
+  faTools,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
 
 const RoutesGrid = styled.div`
   display: grid;
@@ -120,7 +124,7 @@ function App({ app, refresh }) {
               color="#6a78d1"
               iconColor="#e5f5f8"
               title="This app will remain between restarts"
-              Icon={FaInfinity}
+              icon={faInfinity}
             />
           )}
           {app.system && (
@@ -128,14 +132,14 @@ function App({ app, refresh }) {
               title="This app is essential for the localproxy system"
               iconColor="#e5f5f8"
               color="#00a38d"
-              Icon={FaTools}
+              icon={faTools}
             />
           )}
           {!app.system && isLocal && (
             <UIIcon
               color="#d94c53"
               iconColor="#e5f5f8"
-              Icon={FaTrash}
+              icon={faTrash}
               onClick={deleteApp}
             />
           )}

@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { FaTools, FaPlus, FaLock } from "react-icons/fa";
 import Apps from "./app/Apps";
 import UIIcon from "./util/UIIcon";
 import useApi from "./util/useApi";
 import { SslSettings } from "./ssl/SslSettings";
 import AddModal from "./add/AddModal";
 import UIModal from "./util/UIModal";
+import { faLock, faPlus, faTools } from "@fortawesome/free-solid-svg-icons";
 
 function ReactApp() {
   const { data: hostname } = useApi({
@@ -30,7 +30,7 @@ function ReactApp() {
         <UIIcon
           color="#6a78d1"
           iconColor={showSslSettings ? "#e5f5f8" : "#2d3e50"}
-          Icon={FaLock}
+          icon={faLock}
           onClick={() => setShowSslSettings(!showSslSettings)}
         />
         {isLocal && (
@@ -38,13 +38,13 @@ function ReactApp() {
             <UIIcon
               color="#6a78d1"
               iconColor={showAddModal ? "#e5f5f8" : "#2d3e50"}
-              Icon={FaPlus}
+              icon={faPlus}
               onClick={() => setShowAddModal(!showAddModal)}
             />
             <UIIcon
               color="#00a38d"
               iconColor={showSystem ? "#e5f5f8" : "#2d3e50"}
-              Icon={FaTools}
+              icon={faTools}
               onClick={() => setShowSystem(!showSystem)}
             />
           </>
