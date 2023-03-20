@@ -88,7 +88,16 @@ export class StandaloneServer {
 
   regenerateRoutes() {
     this.routes = this.apps.flatMap((app) => app.routes);
-    this.routes.sort((routeA, routeB) => routeB.priority - routeA.priority);
+    this.routes.sort((routeA, routeB) => {
+      const prio = routeB.priority - routeA.priority;
+      if (prio !== 0) {
+        return prio;
+      }
+
+      const aSlashes = routeA.route.split("/").length;
+      const bSlashes = routeB.route.split("/").length;
+      return bSlashes - aSlashes;
+    });
   }
 
   register(app: LocalproxyApp) {
