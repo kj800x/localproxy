@@ -15,4 +15,9 @@ export const AddGridWrapper = styled.div`
   & ~ .react-tabs {
     margin-top: 12px;
   }
+
+  input[type="checkbox"] {
+    margin: 1px;
+    justify-self: left;
+  }
 `;

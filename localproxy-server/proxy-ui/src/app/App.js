@@ -4,6 +4,7 @@ import UIIcon from "../util/UIIcon";
 import Route from "./Route";
 import Tag from "../util/Tag";
 import styled from "styled-components";
+import { ArrowContainer, ReflowContainer, StyledArrow } from "./RouteMapping";
 
 const RoutesGrid = styled.div`
   display: grid;
@@ -16,21 +17,64 @@ const RoutesGrid = styled.div`
 
   .normal-tags {
     display: block;
+    user-select: none;
   }
 
   .small-screen-tags {
     display: none;
+    user-select: none;
   }
 
-  @media screen and (max-width: 490px) {
+  ${ReflowContainer} {
+    display: contents;
+  }
+
+  ${ArrowContainer} {
+    display: contents;
+  }
+
+  ${StyledArrow} {
+    user-select: none;
+  }
+
+  @media screen and (max-width: 670px) {
+    grid-template-columns: auto auto auto 1fr auto auto;
+
+    ${ReflowContainer} {
+      font-size: small;
+    }
+
+    ${ArrowContainer} {
+      font-size: x-small;
+    }
+  }
+
+  @media screen and (max-width: 544px) {
     .normal-tags {
       display: none;
     }
 
-    grid-template-columns: auto auto 1fr auto auto;
+    grid-template-columns: 1fr auto auto;
 
     .small-screen-tags {
       display: contents;
+    }
+
+    ${ReflowContainer} {
+      font-size: small;
+      display: block;
+      display: flex;
+      flex-direction: column;
+    }
+
+    ${ArrowContainer} {
+      font-size: x-small;
+      display: block;
+      position: relative;
+      ${StyledArrow} {
+        display: none;
+      }
+      margin-left: 12px;
     }
   }
 `;

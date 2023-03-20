@@ -2,6 +2,7 @@ import React, { useState, useCallback } from "react";
 import styled from "styled-components";
 import classNames from "classnames";
 import useApi from "../util/useApi";
+import Loader from "react-loaders";
 
 const SslSettingsWrapper = styled.div`
   display: grid;
@@ -90,14 +91,18 @@ const Trust = ({ editingEnabled }) => {
           <button onClick={trust}>Trust</button>
         </>
       )}
-      {trustList && (
+      {trustList ? (
         <div className="status">
           {trustList
             .map((t) => t.split(" ")[t.split(" ").length - 1])
             .join(", ")}
         </div>
+      ) : (
+        <div className="status">
+          <Loader type="ball-pulse" />
+        </div>
       )}
-      {trustResult && (
+      {trustResult ? (
         <div
           className={classNames("result", {
             error: trustResult.includes("Error:"),
@@ -105,7 +110,7 @@ const Trust = ({ editingEnabled }) => {
         >
           {trustResult}
         </div>
-      )}
+      ) : null}
     </>
   );
 };
@@ -145,8 +150,14 @@ const Hostnames = ({ editingEnabled }) => {
           <button onClick={addHostname}>Add</button>
         </>
       )}
-      {hostnames && <div className="status">{hostnames.join(", ")}</div>}
-      {addHostnameResult && (
+      {hostnames ? (
+        <div className="status">{hostnames.join(", ")}</div>
+      ) : (
+        <div className="result">
+          <Loader type="ball-pulse" />
+        </div>
+      )}
+      {addHostnameResult ? (
         <div
           className={classNames("result", {
             error: addHostnameResult.includes("Error:"),
@@ -154,7 +165,7 @@ const Hostnames = ({ editingEnabled }) => {
         >
           {addHostnameResult}
         </div>
-      )}
+      ) : null}
     </>
   );
 };

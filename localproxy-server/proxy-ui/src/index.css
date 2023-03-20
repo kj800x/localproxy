@@ -118,7 +118,7 @@ a {
   margin-bottom: 12px;
 }
 
-.ball-grid-pulse > div {
+.ball-grid-pulse > div, .ball-pulse > div {
   background-color: #2d3e50 !important;
 }
 

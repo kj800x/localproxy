@@ -6,8 +6,12 @@ const ArrowWrapper = styled.span`
   margin: 0 4px;
 `;
 
-function Arrow() {
-  return <ArrowWrapper>→</ArrowWrapper>;
+function Arrow({ className, style }) {
+  return (
+    <ArrowWrapper className={className} style={style}>
+      →
+    </ArrowWrapper>
+  );
 }
 
 export default Arrow;

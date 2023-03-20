@@ -25,6 +25,10 @@ const OverflowWrap = styled.span`
   min-width: 100px;
 `;
 
+export const ReflowContainer = styled.span``;
+export const ArrowContainer = styled.span``;
+export const StyledArrow = styled(Arrow)``;
+
 const colorByType = (type) => {
   switch (type) {
     case "data":
@@ -57,8 +61,6 @@ const useBuildInfo = (route) => {
       const headResponse = await fetch(buildInfoPath, {
         method: "HEAD",
       });
-
-      console.log(headResponse.headers);
 
       if (
         headResponse.status !== 200 ||
@@ -137,8 +139,6 @@ function RouteMapping({ route, updateRoute }) {
 
   const buildInfo = useBuildInfo(route);
 
-  console.log(buildInfo);
-
   if (route.static) {
     return (
       <>
@@ -154,12 +154,15 @@ function RouteMapping({ route, updateRoute }) {
             </Tag>
           </a>
         </span>
-
-        <a href={route.route}>
-          <OverflowWrap>{route.route}</OverflowWrap>
-        </a>
-        <Arrow />
-        <OverflowWrap>{route.staticDir}</OverflowWrap>
+        <ReflowContainer>
+          <a href={route.route}>
+            <OverflowWrap>{route.route}</OverflowWrap>
+          </a>
+          <ArrowContainer>
+            <StyledArrow />
+            <OverflowWrap>{route.staticDir}</OverflowWrap>
+          </ArrowContainer>
+        </ReflowContainer>
         <RouteSettingsWrapper>
           {buildInfo.data ? (
             <Tooltip
@@ -225,13 +228,17 @@ function RouteMapping({ route, updateRoute }) {
           D
         </Tag>
       </span>
-      <a href={route.route}>
-        <OverflowWrap>{route.route}</OverflowWrap>
-      </a>
-      <Arrow />
-      <a href={target}>
-        <OverflowWrap>{target}</OverflowWrap>
-      </a>
+      <ReflowContainer>
+        <a href={route.route}>
+          <OverflowWrap>{route.route}</OverflowWrap>
+        </a>
+        <ArrowContainer>
+          <StyledArrow />
+          <a href={target}>
+            <OverflowWrap>{target}</OverflowWrap>
+          </a>
+        </ArrowContainer>
+      </ReflowContainer>
       <RouteSettingsWrapper>
         <Tag
           disabled={!isLocal}
