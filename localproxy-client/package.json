@@ -1,6 +1,6 @@
 {
   "name": "@kj800x/localproxy-client",
-  "version": "0.3.4",
+  "version": "0.4.0",
   "description": "A client to help register and deregister apps for localproxy",
   "main": "lib/client.js",
   "types": "lib/client.d.ts",
@@ -15,7 +15,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "tmp": "^0.1.0"
+    "tmp": ">=0.2.1"
   },
   "devDependencies": {
     "@types/node": "16.4.13",
